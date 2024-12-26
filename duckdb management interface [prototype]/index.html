@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DuckDB Management Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>DuckDB Management</h1>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="panel">
+                <h2>CRUD Operations</h2>
+                <form id="crud-form">
+                    <label for="table">Table Name:</label><br>
+                    <input type="text" id="table" name="table" placeholder="Enter table name" required><br><br>
+
+                    <label for="operation">Operation:</label><br>
+                    <select id="operation" name="operation" required>
+                        <option value="create">Create</option>
+                        <option value="read">Read</option>
+                        <option value="update">Update</option>
+                        <option value="delete">Delete</option>
+                    </select><br><br>
+
+                    <label for="data">Data (JSON format for create/update):</label><br>
+                    <textarea id="data" name="data" placeholder='{"id": 1,"name": "Model A","accuracy": 0.95}'></textarea><br><br>
+
+                    <button type="submit">Execute</button>
+                </form>
+                <div id="crud-output" class="output"></div>
+            </div>
+
+            <div class="panel">
+                <h2>SQL Console</h2>
+                <form id="sql-form">
+                    <label for="query">SQL Query:</label><br>
+                    <textarea id="query" name="query" placeholder="Enter SQL query"></textarea><br><br>
+                    <button type="submit">Run Query</button>
+                </form>
+                <div>
+                    <h3>Frequently Used Queries</h3>
+                    <button onclick="runQuery('SELECT * FROM models;')">Query 1</button>
+                    <button onclick="runQuery('SELECT COUNT(*) FROM models;')">Query 2</button>
+                    <button onclick="runQuery('SELECT * FROM models WHERE accuracy > 0.9;')">Query 3</button>
+                    <button onclick="runQuery('SELECT COUNT(*) FROM models;')">Query 4</button>
+                    <button onclick="runQuery('SELECT COUNT(*) FROM models;')">Query 5</button>
+                </div>
+                <div id="sql-output" class="output"></div>
+            </div>
+        </div>
+
+        <div class="panel-result">
+            <h2>Table View</h2>
+            <table id="data-table">
+                <thead>
+                    <tr>
+                        <th>Column 1</th>
+                        <th>Column 2</th>
+                        <th>Column 3</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- insérer ici les données dynamique -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+
+        function runQuery(query) {
+            //permet d'afficher dans la console
+            document.getElementById('sql-output').textContent = `Running query: ${query}`;
+            // reste du code
+        }
+    </script>
+</body>
+</html>
