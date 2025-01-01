@@ -34,17 +34,6 @@ const getDb = async () => {
 import * as duckdbduckdbWasm from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev106.0/+esm";
 console.log("duckdbduckdbWasm:", window.duckdbduckdbWasm);
 window.duckdbduckdbWasm = duckdbduckdbWasm;
-getDb().then(async (db) => {
-    const conn = await db.connect();
-    const result = await conn.query(`
-          CREATE OR REPLACE TABLE friends (friend_name VARCHAR, friend_age INTEGER);
-          INSERT INTO friends (friend_name, friend_age) VALUES ('Alice', 30);
-          INSERT INTO friends (friend_name, friend_age) VALUES ('Gizmo', 25);
-          INSERT INTO friends (friend_name, friend_age) VALUES ('Alien junior', 18);
-          SELECT * FROM friends WHERE friend_age >= 26;
-        `);
-    console.log(result.toString());
-});
 
 let temp_json_data;
 let temp_json_data2;
@@ -186,7 +175,80 @@ async function loadEvaluastionRuns(){
     }
 }*/
 
+async function loadTaskMetrics(){
+    try {
+        // Table evaluation_runs
+        await conn.query(`
+            CREATE SEQUENCE metric_id_sequence START 1;
+            
+            CREATE OR REPLACE TABLE task_metrics (
+                task_id INTEGER PRIMARY KEY, 
+                metric_name VARCHAR NOT NULL, 
+                higher_is_better BOOLEAN, 
+                category VARCHAR,
+                use_case VARCHAR, 
+                sample_level_fn VARCHAR,
+                corpus_level_fn VARCHAR
+            );
+            
+            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            SELECT 
+                nextval('metric_id_sequence'),
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].metric_name') AS metric_name,
+                json_extract(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].higher_is_better')::BOOLEAN AS higher_is_better,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].category') AS category,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].use_case') AS use_case,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].sample_level_fn') AS sample_level_fn,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].corpus_level_fn') AS corpus_level_fn
+            FROM temp_json_data;
+            
+            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            SELECT 
+                nextval('metric_id_sequence'),
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].metric_name') AS metric_name,
+                json_extract(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].higher_is_better')::BOOLEAN AS higher_is_better,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].category') AS category,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].use_case') AS use_case,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].sample_level_fn') AS sample_level_fn,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].corpus_level_fn') AS corpus_level_fn
+            FROM temp_json_data;
+            
+            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            SELECT 
+                nextval('metric_id_sequence'),
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].metric_name') AS metric_name,
+                json_extract(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].higher_is_better')::BOOLEAN AS higher_is_better,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].category') AS category,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].use_case') AS use_case,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].sample_level_fn') AS sample_level_fn,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].corpus_level_fn') AS corpus_level_fn
+            FROM temp_json_data;
+            
+            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            SELECT 
+                nextval('metric_id_sequence'),
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].metric_name') AS metric_name,
+                json_extract(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].higher_is_better')::BOOLEAN AS higher_is_better,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].category') AS category,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].use_case') AS use_case,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].sample_level_fn') AS sample_level_fn,
+                json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].corpus_level_fn') AS corpus_level_fn
+            FROM temp_json_data;
+            
+        `);
+
+        const result = await conn.query("SELECT * FROM task_metrics;");
+        console.log("Données de task_metrics : ", result.toString());
+
+        conn.close();
+
+    } catch (error) {
+        console.error("Erreur lors du chargement des fichiers JSON :", error);
+    }
+}
+
 loadJsonFiles().then(() => {
     loadEvaluastionRuns();
     //loadTaskConfig();
+    loadTaskMetrics();
 });
