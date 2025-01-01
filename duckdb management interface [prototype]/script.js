@@ -249,6 +249,6 @@ async function loadTaskMetrics(){
 
 loadJsonFiles().then(() => {
     loadEvaluastionRuns();
-    //loadTaskConfig();
+    //loadTaskConfig(); -> Coucou
     loadTaskMetrics();
 });
