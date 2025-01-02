@@ -53,8 +53,12 @@ let configTasks;
 let tasksArray;
 let results;
 let results2;
+let average_all;
+let average_all2;
 let resultArray;
 let resultArray2;
+let average_allArray;
+let average_allArray2;
 
 
 async function loadJsonFiles() {
@@ -104,7 +108,9 @@ async function loadJsonFiles() {
         });
 
         results = data.results;
-        resultArray = Object.keys(results).map(key => {
+        resultArray = Object.keys(results)
+            .filter(key => key !== "helm|mmlu:_average|5" && key !== "all")
+            .map(key => {
             const result = results[key];
             return {
                 key,
@@ -123,8 +129,46 @@ async function loadJsonFiles() {
         const data2 = await response2.json();
 
         results2 = data2.results;
-        resultArray2 = Object.keys(results2).map(key => {
+        resultArray2 = Object.keys(results2)
+            .filter(key => key !== "helm|mmlu:_average|5" && key !== "all")
+            .map(key => {
             const result = results2[key];
+            return {
+                key,
+                em: result.em,
+                em_stderr: result.em_stderr,
+                qem: result.qem,
+                qem_stderr: result.qem_stderr,
+                pem: result.pem,
+                pem_stderr: result.pem_stderr,
+                pqem: result.pqem,
+                pqem_stderr: result.pqem_stderr,
+            };
+        });
+
+        average_all = data.results;
+        average_allArray = Object.keys(average_all)
+            .filter(key => key === "helm|mmlu:_average|5" ||  key === "all")
+            .map(key => {
+            const result = average_all[key];
+            return {
+                key,
+                em: result.em,
+                em_stderr: result.em_stderr,
+                qem: result.qem,
+                qem_stderr: result.qem_stderr,
+                pem: result.pem,
+                pem_stderr: result.pem_stderr,
+                pqem: result.pqem,
+                pqem_stderr: result.pqem_stderr,
+            };
+        });
+
+        average_all2 = data2.results;
+        average_allArray2 = Object.keys(average_all2)
+            .filter(key => key === "helm|mmlu:_average|5" || key === "all")
+            .map(key => {
+            const result = average_all2[key];
             return {
                 key,
                 em: result.em,
@@ -141,6 +185,7 @@ async function loadJsonFiles() {
         // Afficher le tableau pour vérifier
         //console.log(tasksArray);
         //console.log(resultArray);
+        //console.log(average_allArray2);
 
     } catch (error) {
         console.error("Erreur lors du chargement des fichiers JSON :", error);
@@ -262,7 +307,7 @@ async function loadTaskMetrics(){
             CREATE SEQUENCE metric_id_sequence START 1;
             
             CREATE OR REPLACE TABLE task_metrics (
-                task_id INTEGER PRIMARY KEY, 
+                metric_id INTEGER PRIMARY KEY, 
                 metric_name VARCHAR NOT NULL, 
                 higher_is_better BOOLEAN, 
                 category VARCHAR,
@@ -271,7 +316,7 @@ async function loadTaskMetrics(){
                 corpus_level_fn VARCHAR
             );
             
-            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            INSERT INTO task_metrics (metric_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
             SELECT 
                 nextval('metric_id_sequence'),
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].metric_name') AS metric_name,
@@ -282,7 +327,7 @@ async function loadTaskMetrics(){
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[0].corpus_level_fn') AS corpus_level_fn
             FROM temp_json_data;
             
-            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            INSERT INTO task_metrics (metric_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
             SELECT 
                 nextval('metric_id_sequence'),
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].metric_name') AS metric_name,
@@ -293,7 +338,7 @@ async function loadTaskMetrics(){
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[1].corpus_level_fn') AS corpus_level_fn
             FROM temp_json_data;
             
-            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            INSERT INTO task_metrics (metric_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
             SELECT 
                 nextval('metric_id_sequence'),
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].metric_name') AS metric_name,
@@ -304,7 +349,7 @@ async function loadTaskMetrics(){
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[2].corpus_level_fn') AS corpus_level_fn
             FROM temp_json_data;
             
-            INSERT INTO task_metrics (task_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
+            INSERT INTO task_metrics (metric_id, metric_name, higher_is_better, category, use_case, sample_level_fn, corpus_level_fn)
             SELECT 
                 nextval('metric_id_sequence'),
                 json_extract_string(config_tasks, '$.helm|mmlu:abstract_algebra.metric[3].metric_name') AS metric_name,
@@ -332,7 +377,7 @@ async function loadEvaluationResults(){
             
             CREATE OR REPLACE TABLE evaluation_results (
                 run_id INTEGER REFERENCES evaluation_runs(run_id),
-                task_id INTEGER,
+                task_id INTEGER REFERENCES task_configs(task_id),
                 em DECIMAL(10,4), 
                 em_stderr DECIMAL(10,4),
                 qem DECIMAL(10,4), 
@@ -342,6 +387,7 @@ async function loadEvaluationResults(){
                 pqem DECIMAL(10,4),
                 pqem_stderr DECIMAL(10,4),
                 
+                PRIMARY KEY(run_id, task_id)
             );
         `);
 
@@ -349,10 +395,7 @@ async function loadEvaluationResults(){
             await conn.query(`
                 INSERT INTO evaluation_results (run_id, task_id, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
                 VALUES (1,
-                        COALESCE(
-                        (SELECT task_id FROM task_configs WHERE '${result.key}' LIKE '%' || task_base_name || '%'),
-                        0
-                        ),
+                       (SELECT task_id FROM task_configs WHERE '${result.key}' LIKE '%' || task_base_name || '%'),
                        ${result.em}, ${result.em_stderr},
                        ${result.qem}, ${result.qem_stderr},
                        ${result.pem}, ${result.pem_stderr},
@@ -363,11 +406,8 @@ async function loadEvaluationResults(){
         for (const result of resultArray2) {
             await conn.query(`
                 INSERT INTO evaluation_results (run_id, task_id, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
-                VALUES (1,
-                        COALESCE(
-                        (SELECT task_id FROM task_configs WHERE '${result.key}' LIKE '%' || task_base_name || '%'),
-                        0
-                        ),
+                VALUES (2,
+                       (SELECT task_id FROM task_configs WHERE '${result.key}' LIKE '%' || task_base_name || '%'),
                        ${result.em}, ${result.em_stderr},
                        ${result.qem}, ${result.qem_stderr},
                        ${result.pem}, ${result.pem_stderr},
@@ -386,10 +426,70 @@ async function loadEvaluationResults(){
     }
 }
 
+async function loadAverageAllResults(){
+    try {
+        await conn.query(`
+            
+            CREATE OR REPLACE TABLE aggregated_evaluation_results (
+                run_id INTEGER REFERENCES evaluation_runs(run_id),
+                result_type VARCHAR CHECK (result_type IN ('average', 'all')),
+                em DECIMAL(10,4), 
+                em_stderr DECIMAL(10,4),
+                qem DECIMAL(10,4), 
+                qem_stderr DECIMAL(10,4),
+                pem DECIMAL(10,4), 
+                pem_stderr DECIMAL(10,4), 
+                pqem DECIMAL(10,4),
+                pqem_stderr DECIMAL(10,4),
+                
+                PRIMARY KEY(run_id, result_type)
+            );
+        `);
+
+        for (const result of average_allArray) {
+
+            const resultType = result.key === "all" ? "all" : "average";
+
+            await conn.query(`
+                INSERT INTO aggregated_evaluation_results (run_id, result_type, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
+                VALUES (1, '${resultType}',
+                       ${result.em}, ${result.em_stderr},
+                       ${result.qem}, ${result.qem_stderr},
+                       ${result.pem}, ${result.pem_stderr},
+                       ${result.pqem}, ${result.pqem_stderr});
+            `);
+        }
+
+        for (const result of average_allArray2) {
+
+            const resultType = result.key === "all" ? "all" : "average";
+
+            await conn.query(`
+                INSERT INTO aggregated_evaluation_results (run_id, result_type, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
+                VALUES (2, '${resultType}',
+                       ${result.em}, ${result.em_stderr},
+                       ${result.qem}, ${result.qem_stderr},
+                       ${result.pem}, ${result.pem_stderr},
+                       ${result.pqem}, ${result.pqem_stderr});
+            `);
+        }
+
+        // Vérifier l'insertion
+        const result = await conn.query("SELECT * FROM aggregated_evaluation_results LIMIT 5");
+        console.log("Données de aggregated_evaluation_results : ", result.toString());
+
+
+    } catch (error) {
+        console.error("Erreur lors du chargement des fichiers JSON :", error);
+        conn.close();
+    }
+}
+
 
 loadJsonFiles().then(() => {
     loadEvaluationRuns();
     loadTaskMetrics();
     loadTaskConfig();
     loadEvaluationResults();
+    loadAverageAllResults();
 });
