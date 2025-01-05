@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/sql-hint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material.min.css">
+
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <img id="logo" src="../assets/logo.png" alt="logo">
+    </header>
+
+    <div class="contenant">
+
+        <div class="all-contenant">
+            <div class="img-buttons-contenant">
+                <img id="execute-img" src="../assets/execute_and_display.png" alt="">
+    
+                <div class="button-contenant">
+                    <button id="sqlButton" class="active">SQLConsole</button>
+                    <button id="queryButton">Frequently used query</button>
+                </div>
+            </div>
+            <div class="queries-contenant">
+                <div class="query-item" data-selected="false">
+                    <div class="query-circle">1</div>
+                    <span class="query-name">Requête 1</span>
+                </div>
+                <div class="query-item" data-selected="false">
+                    <div class="query-circle">2</div>
+                    <span class="query-name">Requête 2</span>
+                </div>
+                <div class="query-item" data-selected="false">
+                    <div class="query-circle">3</div>
+                    <span class="query-name">Requête 3</span>
+                </div>
+                <div class="query-item" data-selected="false">
+                    <div class="query-circle">4</div>
+                    <span class="query-name">Requête 4</span>
+                </div>
+                <div class="query-item" data-selected="false">
+                    <div class="query-circle">5</div>
+                    <span class="query-name">Requête 5</span>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <table class="tableau">
+            <thead>
+                <tr>
+                    <th>Code  <img src="../assets/ico_info.png" alt="info" class="info-icon">
+                        <div class="tooltip">Ce champ est pour entrer votre code SQL</div>
+                    </th>
+                    <th>Résultat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <textarea id="sqlEditor"></textarea>
+                    </td>
+                    <td>
+                        <button class="run-query-btn">▶ Run Query</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>  
+    
+    <script src="main.js"></script>
+
+    
+</body>
+
+
+
+</html>

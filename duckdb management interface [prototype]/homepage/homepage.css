@@ -1,0 +1,136 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 2em;
+    background-color: #070707;
+    color: #ffffff;
+}
+
+
+
+.header img {
+    margin: 100px, 0px, 0px, 100px;
+}
+/* Google Fonts */
+@import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
+
+/* Global */
+html{
+  min-height: 100%;
+  overflow: hidden;
+}
+
+.title-contenant {
+    width: 80%; /* Ajustez selon vos besoins */
+    padding-left: 5%;
+    padding-right: 5%;
+    max-width: 80%; /* Limite la largeur */
+    overflow: hidden; /* Empêche l'agrandissement si le contenu déborde */
+    margin: 0 auto; /* Centre la div si nécessaire */
+}
+
+
+.line-1 {
+    width: 19em;
+    border-right: 10px solid rgba(255, 255, 255, 0.75);
+    font-size: 220%;
+    text-align: center;
+    white-space:nowrap;
+    overflow: hidden;
+    font-weight: bold;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    background-color: #ccc20043;
+    border: 1px solid yellow;
+    border-radius: 10px;
+    /* Retiré position, top, et transform pour que ce soit dans le flux normal */
+}
+
+/* Animation */
+.anim-typewriter{
+  animation: typewriter 2s steps(44) 1s 1 normal both,
+             blinkTextCursor 500ms steps(44) infinite normal;
+}
+@keyframes typewriter{
+  from{width: 0;}
+  to{width: 19em;}
+}
+@keyframes blinkTextCursor{
+  from{border-right-color: rgba(255,255,255,.75);}
+  to{border-right-color: transparent;}
+}
+
+.query-img-contenant img {
+    width: 600px;
+    margin-left: 10%; /* Déplace l'image vers la gauche */
+    margin-right: 0; /* Supprime la marge droite */
+    transform: translateX(-10%); /* Ajustez la valeur selon le positionnement souhaité */
+}
+
+
+h2 {
+    font-size: 45px;
+    margin: 0;
+    font-weight: normal;
+}
+
+.up-contenant {
+    margin-top: 100px;
+    display: flex;
+}
+
+.contenant {
+    display: block;
+}
+.bottom-contenant img {
+    width: 90%; /* Réduit la taille de l'image à 50% de sa taille d'origine */
+    display: block; /* Pour que margin auto fonctionne */
+    margin: 10px auto; /* Centre l'image horizontalement */
+}
+
+/* Parent contenant le bouton */
+.center-contenant {
+    margin-top: 100px;
+    display: flex;
+    overflow: visible; /* Permet aux éléments d'être visibles en dehors des limites */
+}
+
+/* Styles du bouton avec animation */
+button {
+    background-color: #FFF100;
+    color: #373737;
+    font-size: 20px;
+    font-weight: 600;
+    width: 264px;
+    height: 46px;
+    border-radius: 20px;
+    margin-top: 3%;
+    margin-left: 27%;
+    margin-bottom: 5%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Effet au survol */
+button:hover {
+    transform: scale(1.1); /* Agrandit légèrement */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Effet au clic */
+button:active {
+    transform: scale(0.95);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+.spacer {
+    height: 500px; /* Hauteur personnalisée pour descendre la page */
+}
+
+
+
+
+
+
+
