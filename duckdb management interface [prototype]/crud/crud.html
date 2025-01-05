@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="crud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/sql-hint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material.min.css">
+
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <img id="logo" src="../assets/logo.png" alt="logo">
+    </header>
+
+    <div class="contenant">
+
+        <div class="all-contenant">
+
+            <!-- Section des boutons SQL et Query -->
+            <div class="img-buttons-contenant">
+                <img id="execute-img" src="../assets/crud-workspace.png" alt="Execute and Display Image">
+    
+                <!-- Nouvelle section CRUD -->
+                <div class="crud-contenant">
+                    <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                    <div class="crud-content">
+                        <h2 class="crud-title">Start by Choosing an Operation </h2>
+                        <div class="crud-buttons">
+                            <button class="crud-btn" id="create-btn">Create</button>
+                            <button class="crud-btn" id="read-btn">Read</button>
+                            <button class="crud-btn" id="update-btn">Update</button>
+                            <button class="crud-btn" id="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- section create -->
+            <div class="create-contenant">
+            <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+            <div class="create-content">
+                <h2 class="create-title">What would you like to create ? </h2>
+                <div class="create-buttons">
+                    <button class="create-btn" id="insert-btn">Insert data into Existing Table</button>
+                    <button class="create-btn" id="create-table-btn">Create new table</button>
+                    <button class="create-btn" id="create-view-btn">Create a view</button>
+                    <button class="create-btn" id="create-table-from-query-btn">Create table from query</button>
+                    <button class="create-btn" id="custom-quer-btn">Custom query</button>
+                </div>
+            </div>
+        
+
+        </div>
+
+
+
+
+        <table class="tableau">
+            <thead>
+                <tr>
+                    <th id="query">Query  
+                        <!-- Les étapes sont affichées ici -->
+                        <div class="steps" id="create-step" style="display: none;">
+                            <p>Create</p>
+                            <img src="../assets/cross.png" alt="cross img" class="close-step" data-step="create-step">
+                        </div>
+                        <div class="steps" id="create-view-step" style="display: none;">
+                            <p>Create a view</p>
+                            <img src="../assets/cross.png" alt="cross img" class="close-step" data-step="create-view-step">
+                        </div>
+                        <div class="steps" id="update-step" style="display: none;">
+                            <p>Update</p>
+                            <img src="../assets/cross.png" alt="cross img" class="close-step" data-step="update-step">
+                        </div>
+                        <div class="steps" id="delete-step" style="display: none;">
+                            <p>Delete</p>
+                            <img src="../assets/cross.png" alt="cross img" class="close-step" data-step="delete-step">
+                        </div>
+                        <img src="../assets/ico_info.png" alt="info" class="info-icon">
+
+                    </th>
+                    <th>Résultat</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <p>coucou</p>
+                    </td>
+                    <td>
+                        <button class="run-query-btn">▶ Run Query</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>  
+    
+    <script src="crud.js"></script>
+
+
+    
+</body>
+
+
+
+</html>

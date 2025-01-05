@@ -123,6 +123,7 @@ body {
     table-layout: fixed; /* Fixe les tailles des colonnes */
     width: 90%; /* Prend toute la largeur du parent */
     border-collapse: collapse; /* Retire les espaces entre les cellules */
+
 }
 
 .tableau th, .tableau td {
@@ -134,7 +135,7 @@ body {
 }
 
 .tableau th {
-    font-size: 20px; /* Taille du texte pour les en-têtes */
+    font-size: 20px; 
     font-weight: bold;
 }
 
@@ -278,7 +279,7 @@ body {
 
 /* État sélectionné */
 .query-item[data-selected="true"] .query-circle {
-    background-color: #FFF100; /* Couleur jaune pour l'état sélectionné */
+    background-color: #fff2006a; /* Couleur jaune pour l'état sélectionné */
     color: #070707; /* Texte noir */
 }
 
@@ -313,8 +314,8 @@ body {
 
 /* Style par défaut pour le cercle */
 .query-circle {
-    width: 40px; /* Largeur du cercle */
-    height: 40px; /* Hauteur du cercle */
+    width: 41px; /* Largeur du cercle */
+    height: 30px; /* Hauteur du cercle */
     border-radius: 50%; /* Rend le conteneur circulaire */
     color: #ACABAB; /* Texte blanc */
     font-size: 16px; /* Taille du texte */
@@ -330,9 +331,9 @@ body {
 /* État actif (requête sélectionnée) */
 .query-item.active .query-circle,
 .query-item[data-selected="true"] .query-circle {
-    background-color: #FFF100; /* Couleur jaune pour l'état sélectionné */
+    background-color: #fff20074; /* Couleur jaune pour l'état sélectionné */
     color: #070707; /* Texte noir */
-    border-color: transparent; /* Retire la bordure blanche */
+    border: 2px solid #FFF100;
 }
 
 /* État inactif (par défaut) */
