@@ -1,0 +1,307 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 1em;
+    background-color: #070707;
+    color: #ffffff;
+}
+
+.header img {
+    margin: 100px, 0px, 0px, 100px;
+
+}
+
+.contenant {
+    display: block;
+}
+
+/* Fixe la largeur et la hauteur de l'image #execute-img */
+#execute-img {
+    width: 32%;
+    height: 22%; /* Maintient les proportions de l'image */
+    margin-right: 10%; /* Ajoute un espace entre l'image et les boutons */
+    margin-left: 5%;
+    margin-top: 1.7%;
+}
+
+.contenant #logo {
+    width: 400px;
+    margin-left: 3%;
+    margin-top: 1%;
+}
+
+/* Centrage de la div contenant les boutons */
+.button-contenant {
+    display: flex;
+    justify-content: center; /* Centre les boutons horizontalement */
+    align-items: center; /* Centre les boutons verticalement */
+    gap: 20px; /* Espace entre les boutons */
+    margin-top: 45px; /* Marge pour espacer du contenu au-dessus si nécessaire */
+    margin-bottom: 30px;
+}
+
+/* Style de base pour les boutons */
+.button-contenant button {
+    width: 260px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+
+}
+
+/* Style actif pour sqlButton */
+#sqlButton.active {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: rgba(204, 193, 0, 0.20);
+}
+
+/* Style actif pour queryButton */
+#queryButton.active {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: rgba(204, 193, 0, 0.20);
+}
+
+/* Style inactif après clic */
+#sqlButton.inactive, #queryButton.inactive {
+    border: 1px solid #ffffff;
+    color: #fff;
+}
+
+/* Styles pour le tableau */
+.tableau {
+    border-collapse: collapse; /* Évite les espaces entre les cellules */
+    margin-top: 20px; /* Ajoute un espace au-dessus du tableau */
+    margin-left: 5%;
+    color: #fff; /* Texte en blanc */
+    border: 1px solid #fff; /* Bordures blanches de 10px */
+    overflow: hidden;
+
+    width: 1271px;
+    height: 400px;
+    flex-shrink: 0;
+
+}
+
+/* Stylisation du bouton "Run Query" */
+.run-query-btn {
+    margin-left: 30%;
+    margin-top: 20%;
+    width: 268px;
+    height: 45px;
+    font-weight: bolder;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    color: #fff;
+}
+
+.run-query-btn:hover {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: #FFF100;
+    color: #070707;
+}
+.tableau td {
+    vertical-align: top; /* Aligne le contenu en haut de la cellule */
+    height: 200px; /* Fixe la hauteur de la cellule contenant CodeMirror */
+    overflow: hidden; /* Empêche tout débordement externe */
+}
+
+/* Tableau : Fixe les largeurs des colonnes */
+.tableau {
+    table-layout: fixed; /* Fixe les tailles des colonnes */
+    width: 90%; /* Prend toute la largeur du parent */
+    border-collapse: collapse; /* Retire les espaces entre les cellules */
+
+}
+
+.tableau th, .tableau td {
+    border: 1px solid #fff; /* Bordure blanche */
+    text-align: left; /* Aligne le texte à gauche */
+    vertical-align: top; /* Aligne le contenu en haut de la cellule */
+    overflow: hidden; /* Empêche le débordement */
+    padding: 10px; /* Ajoute un espace interne */
+}
+
+.tableau th {
+    font-size: 20px; 
+    font-weight: bold;
+}
+
+/* Colonne "Code" : Largeur fixe */
+.tableau td:first-child {
+    width: 50%; /* Ajustez selon vos besoins */
+}
+
+/* Colonne "Résultat" : Largeur fixe */
+.tableau td:last-child {
+    width: 50%; /* Ajustez selon vos besoins */
+}
+
+/* Table Styles */
+.tableau th {
+    position: relative; /* Nécessaire pour positionner l'icône et le tooltip par rapport à cette cellule */
+    text-align: left; /* Aligne le texte à gauche */
+    font-size: 18px; /* Taille du texte */
+    padding-right: 40px; /* Laisse de la place pour l'icône */
+}
+
+/* Icône de point d'interrogation */
+.info-container {
+    position: relative; /* Conteneur pour positionner l'icône et le tooltip */
+}
+
+.info-icon {
+    position: absolute; /* Permet de placer l'icône à droite du texte "Code" */
+    top: 50%; /* Centre verticalement */
+    right: 10px; /* Décale de 10px depuis le bord droit */
+    transform: translateY(-50%); /* Ajuste pour un alignement parfait */
+    width: 16px; /* Taille de l'icône */
+    height: 16px; /* Taille de l'icône */
+    cursor: pointer; /* Indique que l'icône est interactive */
+}
+
+.img-buttons-contenant{
+    display: flex;
+}
+
+.crud-title{
+    font-size: 17px;
+}
+
+.crud-contenant{
+    display: flex;
+    margin-left: 2%;
+}
+/* Boutons CRUD - Style aligné avec sqlButton */
+.crud-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+/* Effet de survol des boutons CRUD */
+.crud-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
+/* Effet de clic actif pour CRUD */
+.crud-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+/* Ajout d'un style actif - similaire à sqlButton lorsqu'il est actif */
+.crud-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+
+/*CREATE sections*/
+.create-title{
+    font-size: 17px;
+}
+
+.create-contenant{
+    display: none;
+    margin-left: 2%;
+}
+/* Boutons CRUD - Style aligné avec sqlButton */
+.create-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+/* Effet de survol des boutons CRUD */
+.create-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
+/* Effet de clic actif pour CRUD */
+.create-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+/* Ajout d'un style actif - similaire à sqlButton lorsqu'il est actif */
+.create-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+.steps {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    width: min-content; /* Largeur spécifique */
+    height: 20px; /* Hauteur spécifique */
+    flex-shrink: 0; /* Empêche la réduction de taille */
+    border-radius: 30px; /* Coins arrondis */
+    border: 1px solid #FFF100; /* Bordure jaune */
+    background: rgba(204, 193, 0, 0.20); /* Fond semi-transparent */
+    font-size: 12px; /* Taille de texte réduite pour s'adapter à la petite taille */
+    margin-top: 5px; /* Espacement entre les étapes */
+    margin-left: 2%;
+}
+
+.steps p {
+    margin: 0; /* Supprime l'espace autour du texte */
+    font-size: 12px; /* Assure que le texte s'adapte bien à la taille de l'élément */
+}
+
+.steps img {
+    width: 16px; /* Taille de l'image de croix */
+    height: 16px; /* Taille de l'image de croix */
+    cursor: pointer;
+}
+
+#query {
+    display: flex;
+    padding-top: 10px;
+}
+
+
+
+
+
+
+
+
+
+

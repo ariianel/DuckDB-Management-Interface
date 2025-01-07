@@ -1,0 +1,348 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 1em;
+    background-color: #070707;
+    color: #ffffff;
+}
+
+.header img {
+    margin: 100px, 0px, 0px, 100px;
+
+}
+
+.contenant {
+    display: block;
+}
+
+/* Fixe la largeur et la hauteur de l'image #execute-img */
+#execute-img {
+    width: 32%;
+    height: 22%; /* Maintient les proportions de l'image */
+    margin-right: 10%; /* Ajoute un espace entre l'image et les boutons */
+    margin-left: 3%;
+    margin-top: 1.7%;
+}
+
+.contenant #logo {
+    width: 400px;
+    margin-left: 3%;
+    margin-top: 1%;
+}
+
+/* Centrage de la div contenant les boutons */
+.button-contenant {
+    display: flex;
+    justify-content: center; /* Centre les boutons horizontalement */
+    align-items: center; /* Centre les boutons verticalement */
+    gap: 20px; /* Espace entre les boutons */
+    margin-top: 45px; /* Marge pour espacer du contenu au-dessus si nécessaire */
+    margin-bottom: 30px;
+}
+
+/* Style de base pour les boutons */
+.button-contenant button {
+    width: 260px;
+    height: 45px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+
+}
+
+/* Style actif pour sqlButton */
+#sqlButton.active {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: rgba(204, 193, 0, 0.20);
+}
+
+/* Style actif pour queryButton */
+#queryButton.active {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: rgba(204, 193, 0, 0.20);
+}
+
+/* Style inactif après clic */
+#sqlButton.inactive, #queryButton.inactive {
+    border: 1px solid #ffffff;
+    color: #fff;
+}
+
+/* Styles pour le tableau */
+.tableau {
+    border-collapse: collapse; /* Évite les espaces entre les cellules */
+    margin-top: 20px; /* Ajoute un espace au-dessus du tableau */
+    margin-left: 5%;
+    color: #fff; /* Texte en blanc */
+    border: 1px solid #fff; /* Bordures blanches de 10px */
+    overflow: hidden;
+
+    width: 1271px;
+    height: 400px;
+    flex-shrink: 0;
+
+}
+
+/* Stylisation du bouton "Run Query" */
+.run-query-btn {
+    margin-left: 30%;
+    margin-top: 20%;
+    width: 268px;
+    height: 45px;
+    font-weight: bolder;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    color: #fff;
+}
+
+.run-query-btn:hover {
+    border: 1px solid var(--jauneDuckDB, #FFF100);
+    background: #FFF100;
+    color: #070707;
+}
+.tableau td {
+    vertical-align: top; /* Aligne le contenu en haut de la cellule */
+    height: 200px; /* Fixe la hauteur de la cellule contenant CodeMirror */
+    overflow: hidden; /* Empêche tout débordement externe */
+}
+
+/* Tableau : Fixe les largeurs des colonnes */
+.tableau {
+    table-layout: fixed; /* Fixe les tailles des colonnes */
+    width: 90%; /* Prend toute la largeur du parent */
+    border-collapse: collapse; /* Retire les espaces entre les cellules */
+
+}
+
+.tableau th, .tableau td {
+    border: 1px solid #fff; /* Bordure blanche */
+    text-align: left; /* Aligne le texte à gauche */
+    vertical-align: top; /* Aligne le contenu en haut de la cellule */
+    overflow: hidden; /* Empêche le débordement */
+    padding: 10px; /* Ajoute un espace interne */
+}
+
+.tableau th {
+    font-size: 20px; 
+    font-weight: bold;
+}
+
+/* Colonne "Code" : Largeur fixe */
+.tableau td:first-child {
+    width: 50%; /* Ajustez selon vos besoins */
+}
+
+/* Colonne "Résultat" : Largeur fixe */
+.tableau td:last-child {
+    width: 50%; /* Ajustez selon vos besoins */
+}
+
+/* CodeMirror : Hauteur fixe avec défilement */
+.CodeMirror {
+    border-radius: 10px; /* Coins arrondis */
+    background-color: #1e1e1e; /* Fond sombre */
+    color: #ffffff; /* Texte blanc */
+    height: 200px; /* Hauteur fixe */
+    max-height: 200px; /* Limite la hauteur */
+    overflow: auto; /* Défilement interne si débordement */
+    resize: none; /* Empêche le redimensionnement manuel */
+    font-size: 16px; /* Taille du texte */
+}
+
+
+/* Table Styles */
+.tableau th {
+    position: relative; /* Nécessaire pour positionner l'icône et le tooltip par rapport à cette cellule */
+    text-align: left; /* Aligne le texte à gauche */
+    font-size: 18px; /* Taille du texte */
+    padding-right: 40px; /* Laisse de la place pour l'icône */
+}
+
+/* Icône de point d'interrogation */
+.info-container {
+    position: relative; /* Conteneur pour positionner l'icône et le tooltip */
+}
+
+.info-icon {
+    position: absolute; /* Permet de placer l'icône à droite du texte "Code" */
+    top: 50%; /* Centre verticalement */
+    right: 10px; /* Décale de 10px depuis le bord droit */
+    transform: translateY(-50%); /* Ajuste pour un alignement parfait */
+    width: 16px; /* Taille de l'icône */
+    height: 16px; /* Taille de l'icône */
+    cursor: pointer; /* Indique que l'icône est interactive */
+}
+
+/* Tooltip (texte explicatif) */
+.tooltip {
+    position: absolute; /* Positionne le texte par rapport à l'icône */
+    bottom: 100%; /* Positionne le texte juste au-dessus de l'icône */
+    left: 50%; /* Centré horizontalement */
+    transform: translateX(-50%); /* Ajuste pour un alignement parfait */
+    background-color: #333; /* Fond gris foncé */
+    color: #fff; /* Texte blanc */
+    font-size: 12px; /* Taille de police plus petite */
+    padding: 5px; /* Un peu d'espace autour du texte */
+    border-radius: 5px; /* Coins arrondis */
+    visibility: hidden; /* Masqué par défaut */
+    opacity: 0; /* Initialement invisible */
+    transition: opacity 0.3s, visibility 0.3s; /* Animation pour l'apparition */
+}
+
+/* Affichage du tooltip lors du survol de l'icône */
+.info-icon:hover + .tooltip {
+    visibility: visible;
+    opacity: 1; /* Affiche l'info au survol */
+}
+
+/* Espacement spécifique entre l'image et les boutons */
+.img-buttons-contenant {
+    display: block; /* Mode normal par défaut */
+    margin-bottom: 20px; /* Ajoute un espace en bas de l'image */
+}
+
+.img-buttons-contenant.flex {
+    display: flex; /* Mode flex pour Frequently Used Query */
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+    gap: 40px; /* Augmente l'espace entre l'image et les boutons */
+}
+
+/* Conteneur pour les queries */
+.queries-contenant {
+
+    margin-top: 20px; /* Ajoute un espace au-dessus des requêtes */
+    gap: 15px;
+    display: none; /* Caché par défaut */
+    opacity: 0; /* Invisible visuellement */
+    transition: opacity 0.3s ease;
+}
+
+/* Afficher les queries */
+.queries-contenant.visible {
+    display: flex; /* Passe en mode flex */
+    opacity: 1; /* Rendu visible */
+}
+
+/* Style pour chaque requête */
+.query-item {
+    width: 400px;
+    display: flex; /* Les enfants (numéro et texte) sont alignés en flex */
+    align-items: center; /* Centre verticalement le contenu */
+    padding: 10px; /* Ajoute de l'espace interne */
+
+    border-radius: 8px; /* Coins arrondis */
+    margin-bottom: 10px; /* Espacement entre les requêtes */
+    cursor: pointer; /* Indique que c'est cliquable */
+    transition: background-color 0.3s, box-shadow 0.3s; /* Animation sur survol et ombre */
+    position: relative; /* Nécessaire pour positionner le trait */
+    overflow: hidden; /* Empêche le débordement visuel */
+}
+
+/* Effet de survol */
+.query-item:hover {
+    background-color: #333333; /* Change la couleur du fond */
+}
+
+/* Cercle avec numéro */
+.query-circle {
+    width: 40px; /* Largeur du cercle */
+    height: 40px; /* Hauteur du cercle */
+    border-radius: 50%; /* Rend le conteneur circulaire */
+    color: #ACABAB; /* Texte blanc */
+    font-size: 16px; /* Taille du texte */
+    font-weight: bold; /* Texte en gras */
+    display: flex; /* Centrer le texte dans le cercle */
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px; /* Espace entre le cercle et le texte */
+    transition: background-color 0.3s; /* Animation sur changement de couleur */
+}
+
+/* Texte des requêtes */
+.query-name {
+    font-size: 16px; /* Taille du texte */
+    color: #ffffff; /* Texte en blanc */
+}
+
+/* État sélectionné */
+.query-item[data-selected="true"] .query-circle {
+    background-color: #fff2006a; /* Couleur jaune pour l'état sélectionné */
+    color: #070707; /* Texte noir */
+}
+
+/* Par défaut, la ligne jaune est masquée */
+.query-item::after {
+    content: ""; /* Contenu vide */
+    position: absolute; /* Positionné par rapport au parent */
+    bottom: 0; /* Aligné au bas */
+    left: 0; /* Aligné à gauche */
+    width: 100%; /* S'étend sur toute la largeur de la div */
+    height: 2px; /* Épaisseur du trait */
+    background-color: #FFF100; /* Couleur jaune */
+    transform: scaleX(0); /* Initialement invisible (rétréci horizontalement) */
+    transform-origin: left; /* Point d'origine du redimensionnement */
+    transition: transform 0.3s ease; /* Animation fluide */
+}
+
+/* Affiche le trait jaune au survol */
+.query-item:hover::after {
+    transform: scaleX(1); /* Étend le trait sur toute la largeur */
+}
+
+/* Garde le trait jaune visible si l'élément est actif */
+.query-item.active::after {
+    transform: scaleX(1); /* Étend le trait sur toute la largeur */
+}
+
+/* Style pour la requête sélectionnée */
+.query-item.active { /* Change la couleur d'arrière-plan */
+    transition: background-color 0.3s ease; /* Animation fluide */
+}
+
+/* Style par défaut pour le cercle */
+.query-circle {
+    width: 41px; /* Largeur du cercle */
+    height: 30px; /* Hauteur du cercle */
+    border-radius: 50%; /* Rend le conteneur circulaire */
+    color: #ACABAB; /* Texte blanc */
+    font-size: 16px; /* Taille du texte */
+    font-weight: bold; /* Texte en gras */
+    display: flex; /* Centrer le texte dans le cercle */
+    justify-content: center;
+    align-items: center;
+    margin-right: 10px; /* Espace entre le cercle et le texte */
+    transition: background-color 0.3s, border 0.3s; /* Animation sur changement de couleur et bordure */
+    border: 2px solid #ffffff; /* Bordure blanche par défaut */
+}
+
+/* État actif (requête sélectionnée) */
+.query-item.active .query-circle,
+.query-item[data-selected="true"] .query-circle {
+    background-color: #fff20074; /* Couleur jaune pour l'état sélectionné */
+    color: #070707; /* Texte noir */
+    border: 2px solid #FFF100;
+}
+
+/* État inactif (par défaut) */
+.query-item:not(.active) .query-circle {
+    background-color: transparent; /* Arrière-plan transparent */
+    border: 2px solid #ACABAB; /* Bordure blanche */
+    color: #fff; /* Texte blanc */
+}
+
+
+
+
