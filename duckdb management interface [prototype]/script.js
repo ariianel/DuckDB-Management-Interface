@@ -11,42 +11,9 @@ class CustomLogger {
     }
 }
 
-const getDb = async () => {
-    try {
-        const duckdb = window.duckdbduckdbWasm;
-        // @ts-ignore
-        if (window._db) return window._db;
-        const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-
-        // Select a bundle based on browser checks
-        const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
-
-        const worker_url = URL.createObjectURL(
-            new Blob([`importScripts("${bundle.mainWorker}");`], {
-                type: "text/javascript",
-            })
-        );
-
-        // Instantiate the asynchronus version of DuckDB-wasm
-        const worker = new Worker(worker_url);
-        const logger = new CustomLogger();
-        const db = new duckdb.AsyncDuckDB(logger, worker);
-        await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-        URL.revokeObjectURL(worker_url);
-        window._db = db;
-        return db;
-
-    } catch (error) {
-        console.error("Failed to initialize DuckDB:", error);
-        throw error;
-    }
-};
-
 import * as duckdbduckdbWasm from "https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.1-dev106.0/+esm";
 window.duckdbduckdbWasm = duckdbduckdbWasm;
 
-let temp_json_data;
-let temp_json_data2;
 let db;
 let conn;
 let configTasks;
@@ -60,6 +27,392 @@ let resultArray2;
 let average_allArray;
 let average_allArray2;
 
+const getDb = async () => {
+
+    const duckdb = window.duckdbduckdbWasm;
+
+    if (window._db) return window._db;
+
+    const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
+    const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
+
+    const worker_url = URL.createObjectURL(
+        new Blob([`importScripts("${bundle.mainWorker}");`], {
+            type: "text/javascript",
+        })
+    );
+
+    const worker = new Worker(worker_url);
+    const logger = new CustomLogger();
+    const db = new duckdb.AsyncDuckDB(logger, worker);
+
+    // Configuration pour le stockage persistant
+    const config = {
+        path: 'my_database',
+        storageType: 'indexeddb',
+    };
+
+    await db.instantiate(bundle.mainModule, bundle.pthreadWorker, config);
+    URL.revokeObjectURL(worker_url);
+
+    window._db = db;
+    return db;
+};
+
+
+async function saveToLocalStorage(conn) {
+    try {
+        const dataEvaluationRun = await conn.query(`SELECT * FROM evaluation_runs`);
+        const evaluationRuns = dataEvaluationRun.toArray();
+        localStorage.setItem('duckdb_evaluation_runs', JSON.stringify(evaluationRuns));
+
+        const dataTaskMetrics = await conn.query(`SELECT * FROM task_metrics`);
+        const taskMetrics = dataTaskMetrics.toArray();
+        localStorage.setItem('duckdb_task_metrics', JSON.stringify(taskMetrics));
+
+        const dataTaskConfigs = await conn.query(`SELECT * FROM task_configs`);
+        const taskConfigs = dataTaskConfigs.toArray();
+        localStorage.setItem('duckdb_task_configs', JSON.stringify(taskConfigs));
+
+        // Modification pour les résultats agrégés
+        const dataAggregated = await conn.query(`
+            SELECT 
+                run_id,
+                result_type,
+                CAST(em AS FLOAT) as em,
+                CAST(em_stderr AS FLOAT) as em_stderr,
+                CAST(qem AS FLOAT) as qem,
+                CAST(qem_stderr AS FLOAT) as qem_stderr,
+                CAST(pem AS FLOAT) as pem,
+                CAST(pem_stderr AS FLOAT) as pem_stderr,
+                CAST(pqem AS FLOAT) as pqem,
+                CAST(pqem_stderr AS FLOAT) as pqem_stderr
+            FROM aggregated_evaluation_results
+        `);
+        const taskAggregated = dataAggregated.toArray();
+        localStorage.setItem('duckdb_aggregated_evaluation_results', JSON.stringify(taskAggregated));
+
+        // Modification pour les résultats d'évaluation
+        const dataEvaluationResults = await conn.query(`
+            SELECT
+                run_id,
+                task_id,
+                CAST(em AS FLOAT) as em,
+                CAST(em_stderr AS FLOAT) as em_stderr,
+                CAST(qem AS FLOAT) as qem,
+                CAST(qem_stderr AS FLOAT) as qem_stderr,
+                CAST(pem AS FLOAT) as pem,
+                CAST(pem_stderr AS FLOAT) as pem_stderr,
+                CAST(pqem AS FLOAT) as pqem,
+                CAST(pqem_stderr AS FLOAT) as pqem_stderr
+            FROM evaluation_results
+        `);
+        const evaluationResults = dataEvaluationResults.toArray();
+        localStorage.setItem('duckdb_evaluation_results', JSON.stringify(evaluationResults));
+
+        console.log('Données sauvegardées dans localStorage');
+    } catch (error) {
+        console.error('Erreur lors de la sauvegarde:', error);
+    }
+}
+
+function formatToTimestamp(dateString) {
+    const date = new Date(dateString);
+    return date.toISOString().replace('T', ' ').split('.')[0]; // Format: "YYYY-MM-DD HH:MM:SS"
+}
+
+async function loadFromLocalStorage(conn) {
+    try {
+        const savedDataEvaluationRuns = localStorage.getItem('duckdb_evaluation_runs');
+        if (savedDataEvaluationRuns) {
+            const evaluationRuns = JSON.parse(savedDataEvaluationRuns);
+
+            for (const run of evaluationRuns) {
+
+                const startTime = formatToTimestamp(run.start_time);
+                const endTime = formatToTimestamp(run.end_time);
+
+                await conn.query(`
+                    INSERT INTO evaluation_runs (
+                        run_id, model_name, num_fewshot_seeds, override_batch_size,
+                        max_samples, job_id, start_time, end_time, total_evaluation_time
+                    ) VALUES (
+                        ${run.run_id}, '${run.model_name}', ${run.num_fewshot_seeds},
+                        ${run.override_batch_size}, ${run.max_samples}, ${run.job_id},
+                        '${startTime}', '${endTime}', '${run.total_evaluation_time}'
+                    );
+                `);
+            }
+        }
+
+        const savedDataTaskMetrics = localStorage.getItem('duckdb_task_metrics');
+        if (savedDataTaskMetrics) {
+            const taskMetrics = JSON.parse(savedDataTaskMetrics);
+
+            for (const task of taskMetrics) {
+
+                await conn.query(`
+                    INSERT INTO task_metrics (metric_id, metric_name, higher_is_better,
+                                              category, use_case, sample_level_fn, 
+                                              corpus_level_fn)
+                    VALUES (
+                               ${task.metric_id},
+                               '${task.metric_name}',
+                               ${task.higher_is_better},
+                               '${task.category}',
+                               '${task.use_case}',
+                               '${task.sample_level_fn}',
+                               '${task.corpus_level_fn}'
+                           );
+                `);
+            }
+        }
+
+        const savedDataTaskConfig = localStorage.getItem('duckdb_task_configs');
+        if (savedDataTaskConfig) {
+            const taskConfig = JSON.parse(savedDataTaskConfig);
+
+            for (const task of taskConfig) {
+
+                await conn.query(`
+                    INSERT INTO task_configs (task_id, task_base_name, prompt_function, hf_repo, hf_subset,
+                                              trust_dataset, generation_size,
+                                              original_num_docs, effective_num_docs, must_remove_duplicate_docs,
+                                              version, frozen)
+                    VALUES (${task.task_id}, '${task.task_base_name}',
+                            '${task.prompt_function}', '${task.hf_repo}',
+                            '${task.hf_subset}', '${task.trust_dataset}',
+                            '${task.generation_size}', '${task.original_num_docs}',
+                            '${task.effective_num_docs}', '${task.must_remove_duplicate_docs}', '${task.version}',
+                            '${task.frozen}');
+                `);
+            }
+        }
+
+        const savedAggregated = localStorage.getItem('duckdb_aggregated_evaluation_results');
+        if (savedAggregated) {
+            const taskAggregated = JSON.parse(savedAggregated);
+
+            for (const aggregated of taskAggregated) {
+                await conn.query(`
+                    INSERT INTO aggregated_evaluation_results (
+                        run_id, result_type, 
+                        em, em_stderr, qem, qem_stderr,
+                        pem, pem_stderr, pqem, pqem_stderr
+                    ) VALUES (
+                        ${aggregated.run_id}, 
+                        '${aggregated.result_type}',
+                        ${parseFloat(aggregated.em)}, 
+                        ${parseFloat(aggregated.em_stderr)},
+                        ${parseFloat(aggregated.qem)}, 
+                        ${parseFloat(aggregated.qem_stderr)},
+                        ${parseFloat(aggregated.pem)}, 
+                        ${parseFloat(aggregated.pem_stderr)},
+                        ${parseFloat(aggregated.pqem)}, 
+                        ${parseFloat(aggregated.pqem_stderr)}
+                    );
+                `);
+            }
+        }
+
+        const savedDataEvaluationResults = localStorage.getItem('duckdb_evaluation_results');
+        if (savedDataEvaluationResults) {
+            const evaluationResults = JSON.parse(savedDataEvaluationResults);
+
+            for (const result of evaluationResults) {
+                await conn.query(`
+                    INSERT INTO evaluation_results (
+                        run_id, task_id,
+                        em, em_stderr, qem, qem_stderr,
+                        pem, pem_stderr, pqem, pqem_stderr
+                    ) VALUES (
+                        ${result.run_id}, 
+                        ${result.task_id},
+                        ${parseFloat(result.em)}, 
+                        ${parseFloat(result.em_stderr)},
+                        ${parseFloat(result.qem)}, 
+                        ${parseFloat(result.qem_stderr)},
+                        ${parseFloat(result.pem)}, 
+                        ${parseFloat(result.pem_stderr)},
+                        ${parseFloat(result.pqem)}, 
+                        ${parseFloat(result.pqem_stderr)}
+                    );
+                `);
+            }
+        }
+        console.log('Données restaurées depuis localStorage');
+
+    } catch (error) {
+        console.error('Erreur lors du chargement:', error);
+    }
+}
+
+const initializeDb = async () => {
+    try {
+        console.log('Initialisation de la base de données...');
+        db = await getDb();
+        conn = await db.connect();
+
+        // Création de la séquence et de la table
+        await conn.query(`
+            CREATE SEQUENCE IF NOT EXISTS run_id_sequence START 1;
+            
+            CREATE TABLE IF NOT EXISTS evaluation_runs (
+                run_id INTEGER PRIMARY KEY, 
+                model_name VARCHAR NOT NULL, 
+                num_fewshot_seeds INTEGER, 
+                override_batch_size INTEGER,
+                max_samples INTEGER, 
+                job_id INTEGER,
+                start_time TIMESTAMP, 
+                end_time TIMESTAMP, 
+                total_evaluation_time VARCHAR
+            );
+            
+            CREATE SEQUENCE metric_id_sequence START 1;
+            
+            CREATE OR REPLACE TABLE task_metrics (
+                metric_id INTEGER PRIMARY KEY, 
+                metric_name VARCHAR NOT NULL, 
+                higher_is_better BOOLEAN, 
+                category VARCHAR,
+                use_case VARCHAR, 
+                sample_level_fn VARCHAR,
+                corpus_level_fn VARCHAR
+            );
+            
+            CREATE SEQUENCE task_id_sequence START 1;
+
+            CREATE TABLE IF NOT EXISTS task_configs (
+                task_id INTEGER PRIMARY KEY,
+                task_base_name VARCHAR NOT NULL,
+                prompt_function VARCHAR,
+                hf_repo VARCHAR,
+                hf_subset VARCHAR,
+                trust_dataset BOOLEAN,
+                generation_size INTEGER,
+                original_num_docs INTEGER,
+                effective_num_docs INTEGER,
+                must_remove_duplicate_docs BOOLEAN,
+                version INTEGER,
+                frozen BOOLEAN,
+            );
+            
+            CREATE OR REPLACE TABLE evaluation_results (
+                run_id INTEGER REFERENCES evaluation_runs(run_id),
+                task_id INTEGER REFERENCES task_configs(task_id),
+                em DECIMAL(10,4), 
+                em_stderr DECIMAL(10,4),
+                qem DECIMAL(10,4), 
+                qem_stderr DECIMAL(10,4),
+                pem DECIMAL(10,4), 
+                pem_stderr DECIMAL(10,4), 
+                pqem DECIMAL(10,4),
+                pqem_stderr DECIMAL(10,4),
+                
+                PRIMARY KEY(run_id, task_id)
+            );
+            
+            CREATE OR REPLACE TABLE aggregated_evaluation_results (
+                run_id INTEGER REFERENCES evaluation_runs(run_id),
+                result_type VARCHAR CHECK (result_type IN ('average', 'all')),
+                em DECIMAL(10,4), 
+                em_stderr DECIMAL(10,4),
+                qem DECIMAL(10,4), 
+                qem_stderr DECIMAL(10,4),
+                pem DECIMAL(10,4), 
+                pem_stderr DECIMAL(10,4), 
+                pqem DECIMAL(10,4),
+                pqem_stderr DECIMAL(10,4),
+                
+                PRIMARY KEY(run_id, result_type)
+            );
+        `);
+
+        console.log('Table evaluation_runs créée');
+        console.log('Table task_metrics créée');
+        console.log('Table task_configs créée');
+        console.log('Table evaluation_results créée');
+        console.log('Table aggregated_evaluation_results créée');
+
+
+        // Charger les données sauvegardées si elles existent
+        await loadFromLocalStorage(conn);
+
+        // Vérifier si la table est vide après le chargement
+        const countEvalRuns = await checkTableContents(conn, 'evaluation_runs');
+
+        const countTaskMetrics = await checkTableContents(conn, 'task_metrics');
+
+        const countTaskConfig = await checkTableContents(conn, 'task_configs');
+
+        const countEvaluationResults = await checkTableContents(conn, 'evaluation_results');
+
+        const countTaskAggregated = await checkTableContents(conn, 'aggregated_evaluation_results');
+
+
+        if(countEvalRuns === 0 || countTaskMetrics === 0 || countTaskConfig === 0
+            || countTaskAggregated === 0 || countEvaluationResults === 0){
+            await loadJsonFiles();
+        }
+
+        if (countEvalRuns === 0) {
+            console.log('Insertion des données initiales...');
+            await loadEvaluationRuns();
+            console.log('Données initiales insérées');
+
+            await saveToLocalStorage(conn);
+        }
+
+        if (countTaskMetrics === 0) {
+            console.log('Insertion des données initiales...');
+            await loadTaskMetrics();
+            console.log('Données initiales insérées');
+
+            await saveToLocalStorage(conn);
+        }
+
+        if (countTaskConfig === 0) {
+            console.log('Insertion des données initiales...');
+            await loadTaskConfig();
+            console.log('Données initiales insérées');
+
+            await saveToLocalStorage(conn);
+        }
+
+        if (countEvaluationResults === 0) {
+            console.log('Insertion des données initiales...');
+            await loadEvaluationResults();
+            console.log('Données initiales insérées');
+
+            await saveToLocalStorage(conn);
+        }
+
+        if (countTaskAggregated === 0) {
+            console.log('Insertion des données initiales...');
+            await loadAverageAllResults();
+            console.log('Données initiales insérées');
+
+            await saveToLocalStorage(conn);
+        }
+
+    } catch (error) {
+        console.log(`ERREUR: ${error.message}`);
+        console.error("Erreur complète:", error);
+    }
+};
+
+async function checkTableContents(conn, tableName) {
+    const result = await conn.query(`SELECT COUNT(*) as count FROM ${tableName}`);
+    const count = Number.parseInt(result.get(0).count);
+    console.log(`Table ${tableName} contient ${count} enregistrements`);
+
+    if (count > 0) {
+        const data = await conn.query(`SELECT * FROM ${tableName} LIMIT 5`);
+        console.log(`Contenu de ${tableName}: ${data.toString()}`);
+    }
+    return count;
+}
 
 async function loadJsonFiles() {
     try {
@@ -72,12 +425,12 @@ async function loadJsonFiles() {
         await conn.query("SET autoinstall_known_extensions=1;");
 
         // Création des tables temporaires avec une structure plus plate
-        temp_json_data = await conn.query(`
+        await conn.query(`
             CREATE OR REPLACE TABLE temp_json_data AS
             SELECT * FROM read_json_auto('http://localhost:10000/results1.json');
         `);
 
-        temp_json_data2 = await conn.query(`
+        await conn.query(`
             CREATE OR REPLACE TABLE temp_json_data2 AS
             SELECT * FROM read_json_auto('http://localhost:10000/results2.json');
         `);
@@ -485,11 +838,4 @@ async function loadAverageAllResults(){
     }
 }
 
-
-loadJsonFiles().then(() => {
-    loadEvaluationRuns();
-    loadTaskMetrics();
-    loadTaskConfig();
-    loadEvaluationResults();
-    loadAverageAllResults();
-});
+initializeDb();
