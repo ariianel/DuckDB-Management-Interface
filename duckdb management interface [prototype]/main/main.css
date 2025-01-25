@@ -105,6 +105,37 @@ body {
     color: #fff;
 }
 
+.clear-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px; /* Optional: add some padding from the edges */
+    width: 180px;
+    height: 45px;
+    font-weight: bolder;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    color: #fff;
+    /* Keep other existing styles */
+}
+
+/* Ensure the parent TD has a relative positioning */
+td:last-child {
+    position: relative;
+}
+
+.msg-error{
+    color: #af1111;
+    padding: 5px;
+}
+
 .run-query-btn:hover {
     border: 1px solid var(--jauneDuckDB, #FFF100);
     background: #FFF100;
@@ -152,7 +183,7 @@ body {
     background-color: #1e1e1e; /* Fond sombre */
     color: #ffffff; /* Texte blanc */
     height: 200px; /* Hauteur fixe */
-    max-height: 200px; /* Limite la hauteur */
+    max-height: 400px; /* Limite la hauteur */
     overflow: auto; /* Défilement interne si débordement */
     resize: none; /* Empêche le redimensionnement manuel */
     font-size: 16px; /* Taille du texte */

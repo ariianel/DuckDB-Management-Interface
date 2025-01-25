@@ -1100,4 +1100,275 @@ async function loadAverageAllResults(){
     }
 }
 
+let usedQuery = false;
+
 initializeDb();
+
+let sqlEditor = CodeMirror.fromTextArea(document.getElementById("sqlEditor"), {
+    mode: "text/x-sql",           // Définit le mode pour le SQL
+    theme: "tomorrow-night-bright",            // Thème de l'éditeur
+    lineNumbers: true,            // Affiche les numéros de ligne
+    autoCloseBrackets: true,      // Fermeture automatique des parenthèses
+    matchBrackets: true,          // Correspondance des parenthèses
+    extraKeys: {
+        "Ctrl-Space": "autocomplete" // Raccourci pour l'autocomplétion
+    }
+});
+
+let sqlResult = CodeMirror.fromTextArea(document.getElementById("sqlResult"), {
+    mode: "text/x-sql",           // Définit le mode pour le SQL
+    theme: "tomorrow-night-bright",            // Thème de l'éditeur
+    lineNumbers: true,            // Affiche les numéros de ligne
+    autoCloseBrackets: true,      // Fermeture automatique des parenthèses
+    matchBrackets: true,          // Correspondance des parenthèses
+    readOnly: true,
+    extraKeys: {
+        "Ctrl-Space": "autocomplete" // Raccourci pour l'autocomplétion
+    }
+});
+
+// Fixer la taille de CodeMirror
+sqlEditor.setSize("100%", "400px"); // Largeur et hauteur fixes
+sqlResult.setSize("100%", "350px"); // Largeur et hauteur fixes
+
+sqlResult.getWrapperElement().style.display = "none";
+
+let sqlQuery;
+
+sqlEditor.on('change', function(cm, changeObj) {
+    const runQueryBtn = document.querySelector('.run-query-btn');
+
+    // Check if there's any content
+    if (sqlEditor.getValue().trim() !== '') {
+        runQueryBtn.style.color = 'black';
+        runQueryBtn.style.borderColor = 'black';
+        runQueryBtn.style.backgroundColor = '#FFF100';
+        runQueryBtn.style.transform = 'scale(1.05)';  // Slight scale up
+        runQueryBtn.style.transition = 'all 0.3s ease';
+    } else {
+        runQueryBtn.style.color = 'white';
+        runQueryBtn.style.borderColor = 'white';
+        runQueryBtn.style.backgroundColor = '';  // Reset to default
+        runQueryBtn.style.transform = 'scale(1)';
+    }
+});
+
+let btnClear = document.querySelector(".clear-btn");
+let msgError = document.querySelector(".msg-error");
+btnClear.style.display = "none";
+msgError.style.display = "none";
+
+document.getElementById('sqlButton').addEventListener("click", function (event) {
+    // Force read-only to false using multiple methods
+    sqlEditor.setOption('readOnly', false);
+
+    // Optional: Add visual indication of read-only state
+    const editorWrapper = sqlEditor.getWrapperElement();
+    editorWrapper.style.pointerEvents = 'auto';
+
+    usedQuery = false;
+    sqlResult.setSize("100%", "350px");
+
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    sqlResult.getWrapperElement().style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+});
+
+document.querySelector(".run-query-btn").addEventListener("click", function (event) {
+
+    const button = event.target;
+    button.style.display = "none";
+
+    console.log(usedQuery);
+
+    if(usedQuery === false){
+        btnClear.style.display = "block";
+    }
+
+    // Récupérer le contenu de l'éditeur SQL
+    sqlQuery = sqlEditor.getValue().trim();
+
+    if(sqlQuery === ""){
+        msgError.style.display = "block";
+        msgError.textContent = "To execute a query you need to write somethings !"
+        return;
+    }
+    else{
+        executeSQL()
+    }
+
+});
+
+async function executeSQL(){
+    try {
+        const result = await conn.query(sqlQuery);
+        console.log(result.toString());
+
+        sqlResult.setValue(result.toString());
+        sqlResult.getWrapperElement().style.display = "block";
+        sqlResult.refresh();
+
+    } catch(error){
+        msgError.style.display = "block";
+        msgError.textContent = "Syntax error, please check your query !"
+    }
+}
+
+btnClear.addEventListener("click", function(){
+    document.querySelector(".run-query-btn").style.display = "block";
+
+    sqlResult.getWrapperElement().style.display = "none";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+});
+
+let queryButton = document.getElementById('queryButton'); // Bouton Query
+
+queryButton.addEventListener("click", function(){
+
+    sqlEditor.setOption('readOnly', true);
+
+    // Optional: Add visual indication of read-only state
+    const editorWrapper = sqlEditor.getWrapperElement();
+    editorWrapper.style.pointerEvents = 'none';
+
+    usedQuery = true;
+    sqlResult.setSize("100%", "400px");
+    document.querySelector(".run-query-btn").style.display = "none";
+
+    document.querySelectorAll('.query-item').forEach(item => {
+        item.setAttribute('data-selected', 'false');
+        item.classList.remove('active');
+    });
+
+    sqlResult.getWrapperElement().style.display = "none";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+});
+
+document.querySelector(".query-stat").addEventListener("click", function(event){
+    console.log(usedQuery)
+
+    sqlResult.getWrapperElement().style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+    sqlEditor.setValue("SELECT\n" +
+        "    tc.task_base_name,\n" +
+        "    er.pqem,\n" +
+        "    er.pqem_stderr,\n" +
+        "    CASE\n" +
+        "        WHEN er.pqem_stderr > 0.2 THEN 'Peu fiable'\n" +
+        "        WHEN er.pqem_stderr > 0.1 THEN 'Moyennement fiable'\n" +
+        "        ELSE 'Fiable'\n" +
+        "    END AS fiabilite\n" +
+        "FROM evaluation_results er\n" +
+        "JOIN task_configs tc ON er.task_id = tc.task_id;");
+
+    sqlEditor.refresh();
+});
+
+document.querySelector(".query-areas").addEventListener("click", function(event){
+    sqlResult.getWrapperElement().style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+    sqlEditor.setValue("SELECT\n" +
+        "    tc.task_base_name,\n" +
+        "    er.pqem,\n" +
+        "    er.pqem_stderr\n" +
+        "FROM evaluation_results er\n" +
+        "JOIN task_configs tc ON er.task_id = tc.task_id\n" +
+        "WHERE  er.run_id = 1 \n" +
+        "ORDER BY er.pqem DESC\n" +
+        "LIMIT 5;");
+
+    sqlEditor.refresh();
+});
+
+document.querySelector(".query-average").addEventListener("click", function(event){
+    sqlResult.getWrapperElement().style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+    sqlEditor.setValue("SELECT \n" +
+        "    run_id,\n" +
+        "    CORR(pem, pqem) as corr_pem_pqem,\n" +
+        "FROM evaluation_results\n" +
+        "GROUP BY run_id;");
+
+    sqlEditor.refresh();
+});
+
+document.querySelector(".query-trends").addEventListener("click", function(event){
+    sqlResult.getWrapperElement().style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+    sqlEditor.setValue("SELECT\n" +
+        "    REGEXP_EXTRACT(tc.task_base_name, 'mmlu:(.*)_') AS categorie,\n" +
+        "    AVG(er.pqem) as score_moyen,\n" +
+        "    COUNT(*) as nombre_taches\n" +
+        "FROM evaluation_results er\n" +
+        "JOIN task_configs tc ON er.task_id = tc.task_id\n" +
+        "GROUP BY categorie\n" +
+        "ORDER BY score_moyen DESC;");
+
+    sqlEditor.refresh();
+});
+
+document.querySelector(".query-time").addEventListener("click", function(event){
+    sqlResult.getWrapperElement().style.display = "none";
+    document.querySelector(".run-query-btn").style.display = "block";
+    btnClear.style.display = "none";
+    msgError.style.display = "none";
+
+    sqlResult.setValue("");
+    sqlEditor.setValue("");
+    msgError.textContent = "";
+
+    sqlEditor.setValue("SELECT \n" +
+        "    er.run_id,\n" +
+        "    e.model_name,\n" +
+        "    e.total_evaluation_time,\n" +
+        "    er.pqem " +
+        "FROM aggregated_evaluation_results er \n" +
+        "JOIN evaluation_runs e ON er.run_id = e.run_id\n" +
+        "WHERE er.result_type = 'all' \n" +
+        "ORDER BY e.total_evaluation_time DESC;");
+
+    sqlEditor.refresh();
+});
