@@ -2,7 +2,7 @@ html, body {
     background-color: rgb(0, 0, 0);
     height: 100%;
     margin: 0;
-    padding: 15px;
+    overflow-x: hidden;
     overflow-y: auto; /* Assure le défilement vertical */
 }
 
@@ -137,4 +137,22 @@ footer {
     text-decoration: none;
 }
 
+.database-schema{
+    margin-top: 100px;
+}
+
+.img-table{
+    width: 100%;
+    align-self: center;
+}
+
+.contenant{
+    margin-top: 100px;
+}
+
+.crud-buttons{
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+}
 

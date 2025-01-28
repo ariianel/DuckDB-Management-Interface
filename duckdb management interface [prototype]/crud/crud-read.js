@@ -47,21 +47,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const tableColumns = {
         "Table \"evaluation_runs\"": [
-            "prout_test", "model_name", "num_fewshot_seeds", "override_batch_size", 
-            "max_samples", "job_id", "start_time", "end_time", "total_evaluation_time", 
+            "run_id", "model_name", "num_fewshot_seeds", "override_batch_size",
+            "max_samples", "job_id", "start_time", "end_time", "total_evaluation_time",
             "model_sha", "model_dtype", "model_size", "lighteval_sha"
         ],
         "Table \"evaluation_results\"": [
-            "run_id", "model_name", "num_fewshot_seeds", "override_batch_size", 
-            "max_samples", "job_id", "start_time", "end_time", "total_evaluation_time", 
-            "model_sha", "model_dtype", "model_size", "lighteval_sha"
+            "run_id", "task_id", "em", "em_stderr", "qem",
+            "qem_stderr", "pem", "pem_stderr", "pqem", "pqem_stderr"
         ],
         "Table \"task_configs\"": [
-            "task_id", "task_base_name", "prompt_function", "hf_repo", 
-            "hf_subset", "hf_revision", "hf_filter", "trust_dataset", 
-            "few_shots_split", "few_shots_select", "generation_size", 
-            "generation_grammar", "output_regex", "num_samples", 
-            "original_num_docs", "effective_num_docs", 
+            "task_id", "task_base_name", "prompt_function", "hf_repo",
+            "hf_subset", "hf_revision", "hf_filter", "trust_dataset",
+            "few_shots_split", "few_shots_select", "generation_size",
+            "generation_grammar", "output_regex", "num_samples",
+            "original_num_docs", "effective_num_docs",
             "must_remove_duplicate_docs", "version", "frozen"
         ],
         "Table \"task_metrics\"": [

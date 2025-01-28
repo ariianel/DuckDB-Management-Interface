@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createBtn.addEventListener('click', function () {
         crudContenant.style.display = 'none';
         createContenant.style.display = 'flex';
+        createBtn.classList.remove('active');
         showStep('create-step');
         hideStep('update-step');
         hideStep('delete-step');
@@ -219,6 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
             createContenant.style.display = 'none';
         });
     });
+
     
     // Gestion des clics sur la croix de chaque table listée pour annuler
     closeButtons.forEach(button => {

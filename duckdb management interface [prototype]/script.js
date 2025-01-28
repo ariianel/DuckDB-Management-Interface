@@ -1127,35 +1127,52 @@ let sqlResult = CodeMirror.fromTextArea(document.getElementById("sqlResult"), {
     }
 });
 
-// Fixer la taille de CodeMirror
-sqlEditor.setSize("100%", "400px"); // Largeur et hauteur fixes
-sqlResult.setSize("100%", "350px"); // Largeur et hauteur fixes
-
-sqlResult.getWrapperElement().style.display = "none";
-
-let sqlQuery;
-
-sqlEditor.on('change', function(cm, changeObj) {
-    const runQueryBtn = document.querySelector('.run-query-btn');
-
-    // Check if there's any content
-    if (sqlEditor.getValue().trim() !== '') {
-        runQueryBtn.style.color = 'black';
-        runQueryBtn.style.borderColor = 'black';
-        runQueryBtn.style.backgroundColor = '#FFF100';
-        runQueryBtn.style.transform = 'scale(1.05)';  // Slight scale up
-        runQueryBtn.style.transition = 'all 0.3s ease';
-    } else {
-        runQueryBtn.style.color = 'white';
-        runQueryBtn.style.borderColor = 'white';
-        runQueryBtn.style.backgroundColor = '';  // Reset to default
-        runQueryBtn.style.transform = 'scale(1)';
+let sqlResultCrud = CodeMirror.fromTextArea(document.getElementById("sqlResultCrud"), {
+    mode: "text/x-sql",           // Définit le mode pour le SQL
+    theme: "tomorrow-night-bright",            // Thème de l'éditeur
+    lineNumbers: true,            // Affiche les numéros de ligne
+    autoCloseBrackets: true,      // Fermeture automatique des parenthèses
+    matchBrackets: true,          // Correspondance des parenthèses
+    readOnly: true,
+    extraKeys: {
+        "Ctrl-Space": "autocomplete" // Raccourci pour l'autocomplétion
     }
 });
 
-let btnClear = document.querySelector(".clear-btn");
+// Fixer la taille de CodeMirror
+sqlEditor.setSize("100%", "400px"); // Largeur et hauteur fixes
+sqlResult.setSize("100%", "350px"); // Largeur et hauteur fixes
+sqlResultCrud.setSize("100%", "250px"); // Largeur et hauteur fixes
+
+
+sqlResult.getWrapperElement().style.display = "none";
+sqlResultCrud.getWrapperElement().style.display = "none";
+
+
+let sqlQuery;
+
+let runQueryBtnConsole = document.querySelector('#run-query-console');
+
+
+sqlEditor.on('change', function(cm, changeObj) {
+    // Check if there's any content
+    if (sqlEditor.getValue().trim() !== '') {
+        runQueryBtnConsole.style.color = 'black';
+        runQueryBtnConsole.style.borderColor = 'black';
+        runQueryBtnConsole.style.backgroundColor = '#FFF100';
+        runQueryBtnConsole.style.transform = 'scale(1.05)';  // Slight scale up
+        runQueryBtnConsole.style.transition = 'all 0.3s ease';
+    } else {
+        runQueryBtnConsole.style.color = 'white';
+        runQueryBtnConsole.style.borderColor = 'white';
+        runQueryBtnConsole.style.backgroundColor = '';  // Reset to default
+        runQueryBtnConsole.style.transform = 'scale(1)';
+    }
+});
+
+let btnClearMain = document.querySelector("#clear-btn-main");
 let msgError = document.querySelector(".msg-error");
-btnClear.style.display = "none";
+btnClearMain.style.display = "none";
 msgError.style.display = "none";
 
 document.getElementById('sqlButton').addEventListener("click", function (event) {
@@ -1169,9 +1186,9 @@ document.getElementById('sqlButton').addEventListener("click", function (event) 
     usedQuery = false;
     sqlResult.setSize("100%", "350px");
 
-    btnClear.style.display = "none";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
+    runQueryBtnConsole.style.display = "block";
     sqlResult.getWrapperElement().style.display = "none";
 
     sqlResult.setValue("");
@@ -1179,7 +1196,7 @@ document.getElementById('sqlButton').addEventListener("click", function (event) 
     msgError.textContent = "";
 });
 
-document.querySelector(".run-query-btn").addEventListener("click", function (event) {
+runQueryBtnConsole.addEventListener("click", function (event) {
 
     const button = event.target;
     button.style.display = "none";
@@ -1187,7 +1204,7 @@ document.querySelector(".run-query-btn").addEventListener("click", function (eve
     console.log(usedQuery);
 
     if(usedQuery === false){
-        btnClear.style.display = "block";
+        btnClearMain.style.display = "block";
     }
 
     // Récupérer le contenu de l'éditeur SQL
@@ -1219,11 +1236,11 @@ async function executeSQL(){
     }
 }
 
-btnClear.addEventListener("click", function(){
-    document.querySelector(".run-query-btn").style.display = "block";
+btnClearMain.addEventListener("click", function(){
+    runQueryBtnConsole.style.display = "block";
 
     sqlResult.getWrapperElement().style.display = "none";
-    btnClear.style.display = "none";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1243,7 +1260,7 @@ queryButton.addEventListener("click", function(){
 
     usedQuery = true;
     sqlResult.setSize("100%", "400px");
-    document.querySelector(".run-query-btn").style.display = "none";
+    runQueryBtnConsole.style.display = "none";
 
     document.querySelectorAll('.query-item').forEach(item => {
         item.setAttribute('data-selected', 'false');
@@ -1251,7 +1268,7 @@ queryButton.addEventListener("click", function(){
     });
 
     sqlResult.getWrapperElement().style.display = "none";
-    btnClear.style.display = "none";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1264,7 +1281,7 @@ document.querySelector(".query-stat").addEventListener("click", function(event){
     console.log(usedQuery)
 
     sqlResult.getWrapperElement().style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
+    runQueryBtnConsole.style.display = "block";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1288,8 +1305,8 @@ document.querySelector(".query-stat").addEventListener("click", function(event){
 
 document.querySelector(".query-areas").addEventListener("click", function(event){
     sqlResult.getWrapperElement().style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
-    btnClear.style.display = "none";
+    runQueryBtnConsole.style.display = "block";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1311,8 +1328,8 @@ document.querySelector(".query-areas").addEventListener("click", function(event)
 
 document.querySelector(".query-average").addEventListener("click", function(event){
     sqlResult.getWrapperElement().style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
-    btnClear.style.display = "none";
+    runQueryBtnConsole.style.display = "block";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1330,8 +1347,8 @@ document.querySelector(".query-average").addEventListener("click", function(even
 
 document.querySelector(".query-trends").addEventListener("click", function(event){
     sqlResult.getWrapperElement().style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
-    btnClear.style.display = "none";
+    runQueryBtnConsole.style.display = "block";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1352,8 +1369,8 @@ document.querySelector(".query-trends").addEventListener("click", function(event
 
 document.querySelector(".query-time").addEventListener("click", function(event){
     sqlResult.getWrapperElement().style.display = "none";
-    document.querySelector(".run-query-btn").style.display = "block";
-    btnClear.style.display = "none";
+    runQueryBtnConsole.style.display = "block";
+    btnClearMain.style.display = "none";
     msgError.style.display = "none";
 
     sqlResult.setValue("");
@@ -1372,3 +1389,712 @@ document.querySelector(".query-time").addEventListener("click", function(event){
 
     sqlEditor.refresh();
 });
+
+// Fonction pour afficher l'étape correspondante
+function showStep(stepId) {
+    const step = document.getElementById(stepId);
+    if (step) {
+        step.style.display = 'flex';
+    }
+}
+
+// Fonction pour masquer l'étape correspondante
+function hideStep(stepId) {
+    const step = document.getElementById(stepId);
+    if (step) {
+        step.style.display = 'none';
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const displayButtons = document.querySelectorAll('.read-simple-display-btn');
+
+    if (displayButtons.length > 0) {
+        displayButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                displayButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+    }
+});
+
+const crudContenant = document.querySelector('.crud-contenant');
+const createContenant = document.querySelector('.create-contenant');
+const readContenant = document.querySelector('.read-contenant');
+const updateContenant = document.querySelector('.update-contenant');
+const deleteContenant = document.querySelector('.delete-contenant');
+let clearBtnCrud = document.querySelector("#clear-btn-crud");
+let msgInfo = document.querySelector(".msg-info");
+
+clearBtnCrud.style.display = "none";
+
+clearBtnCrud.addEventListener("click", function(){
+    msgInfo.style.display = "none";
+    msgInfo.textContent = "";
+    clearBtnCrud.style.display = "none";
+
+    const tdChildren = document.querySelectorAll("#container-crud > *");
+
+    tdChildren.forEach(child => {
+        child.style.display = "none";
+    });
+
+    const thChildren = document.querySelectorAll("#query > *");
+
+    thChildren.forEach(child => {
+        child.style.display = "none";
+    });
+
+    const crudButtons = document.querySelectorAll('.crud-btn');
+
+    crudButtons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.classList.remove('tmp');
+    });
+
+    const createButtons = document.querySelectorAll('.create-btn');
+
+    createButtons.forEach(btn => {
+        btn.classList.remove('tmp');
+    });
+
+    const readSimpleButtons = document.querySelectorAll('.read-simple-display-btn');
+
+    readSimpleButtons.forEach(btn => {
+        btn.classList.remove('active');
+    });
+
+    crudContenant.style.display = 'flex';
+    createContenant.style.display = 'none';
+    readContenant.style.display = 'none';
+    updateContenant.style.display = 'none';
+    deleteContenant.style.display = 'none';
+    document.querySelector(".read-how-display-contenant").style.display = "none";
+
+    sqlResultCrud.getWrapperElement().style.display = "none";
+    sqlResultCrud.setValue("");
+
+})
+
+const createBtn = document.getElementById('create-btn');
+const readBtn = document.getElementById('read-btn');
+
+// Ajouter un événement de clic pour le bouton Create
+createBtn.addEventListener('click', function () {
+
+    const crudButtons = document.querySelectorAll('.crud-btn');
+
+    // Retirer la classe active de tous les boutons
+    crudButtons.forEach(btn => {
+        btn.classList.remove('tmp');
+    });
+
+    this.classList.add('tmp');
+
+    crudContenant.style.display = 'none';
+    createContenant.style.display = 'flex';
+    showStep('create-step');
+    hideStep('update-step');
+    hideStep('delete-step');
+});
+
+// Ajouter un événement de clic pour le bouton Create
+readBtn.addEventListener('click', function () {
+
+    const crudButtons = document.querySelectorAll('.crud-btn');
+
+    // Retirer la classe active de tous les boutons
+    crudButtons.forEach(btn => {
+        btn.classList.remove('tmp');
+    });
+
+    this.classList.add('tmp');
+});
+
+let insertBTN = document.querySelector('#insert-btn');
+
+insertBTN.addEventListener("click", function(){
+    const createButton = document.querySelectorAll('.create-buttons');
+
+    // Retirer la classe active de tous les boutons
+    createButton.forEach(btn => {
+        btn.classList.remove('tmp');
+    });
+
+    // Ajouter la classe active au bouton Create
+    this.classList.add('tmp');
+});
+
+let readSpecificDataBtn = document.querySelector('#specific-columns-btn');
+
+readSpecificDataBtn.addEventListener("click", function(){
+    const createButton = document.querySelectorAll('.create-buttons');
+
+    // Retirer la classe active de tous les boutons
+    createButton.forEach(btn => {
+        btn.classList.remove('tmp');
+    });
+
+    // Ajouter la classe active au bouton Create
+    this.classList.add('tmp');
+});
+
+const tableItems = document.querySelectorAll('.table-item');
+
+tableItems.forEach(item => {
+    item.addEventListener('click', function () {
+
+        tableItems.forEach(i => i.classList.remove('active'));
+
+        this.classList.add('active');
+    });
+});
+
+let runQueryBtnCRUD = document.querySelector("#run-query-btn");
+
+runQueryBtnCRUD.addEventListener("click", executeCRUD);
+
+function executeCRUD(){
+
+    console.log("jsp");
+
+    if(createBtn.classList.contains('tmp'))
+    {
+        if(insertBTN.classList.contains('tmp'))
+        {
+            if(document.getElementById("table-evaluation-runs").classList.contains('active'))
+            {
+                insertDataEvaluationRuns();
+            }
+            if(document.getElementById("table-task-metrics").classList.contains('active'))
+            {
+                insertDataTaskMetrics();
+            }
+            if(document.getElementById("table-task-configs").classList.contains('active'))
+            {
+                insertDataTaskConfigs();
+            }
+            if(document.getElementById("table-general-summary").classList.contains('active'))
+            {
+                insertDataGeneralSummary();
+            }
+            if(document.getElementById("table-tasks-evaluation-results").classList.contains('active'))
+            {
+                insertDataEvaluationResults();
+            }
+            if(document.getElementById("table-tasks-summaries").classList.contains('active'))
+            {
+                insertDataTasksSummaries();
+            }
+            if(document.getElementById("table-aggregated-evaluation-results").classList.contains('active'))
+            {
+                insertDataAggregatedEvaluationResults();
+            }
+        }
+    }
+
+    if(readBtn.classList.contains("tmp")){
+        console.log("ok");
+        if(readSpecificDataBtn.classList.contains("tmp"))
+        {
+
+            const activeButton = document.querySelector('.read-simple-display-btn.active');
+
+            if (activeButton) {
+                const tableName = buttonTableMap[activeButton.id];
+                readSpecificDataFromTable(tableName);
+                runQueryBtnCRUD.style.display = "none";
+            }
+        }
+    }
+
+}
+
+const buttonTableMap = {
+    'evaluation-results-btn': 'evaluation_results',
+    'evaluation-runs-btn': 'evaluation_runs',
+    'task-configs-btn': 'task_configs',
+    'task-metrics-btn': 'task_metrics',
+    'task-summaries-btn': 'task_summaries',
+    'general-summary-btn': 'general_summary'
+};
+
+async function insertDataEvaluationRuns() {
+    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const model_name = document.querySelector("input[name='model_name']").value || null;
+    const num_fewshot_seeds = document.querySelector("input[name='num_fewshot_seeds']").value || null;
+    const override_batch_size = document.querySelector("input[name='override_batch_size']").value || null;
+    const max_samples = document.querySelector("input[name='max_samples']").value || null;
+    const job_id = document.querySelector("input[name='job_id']").value || null;
+    const start_time = document.querySelector("input[name='start_time']").value || null;
+    const end_time = document.querySelector("input[name='end_time']").value || null;
+    const total_evaluation_time = document.querySelector("input[name='total_evaluation_time']").value || null;
+    const model_sha = document.querySelector("input[name='model_sha']").value || null;
+    const model_dtype = document.querySelector("input[name='model_dtype']").value || null;
+    const model_size = document.querySelector("input[name='model_size']").value || null;
+    const lighteval_sha = document.querySelector("input[name='lighteval_sha']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO evaluation_runs (
+            run_id, model_name, num_fewshot_seeds, override_batch_size,
+            max_samples, job_id, start_time, end_time, total_evaluation_time, 
+            model_sha, model_dtype, model_size, lighteval_sha
+        ) VALUES (
+            ${run_id ? `'${run_id}'` : "NULL"},
+            ${model_name ? `'${model_name}'` : "NULL"},
+            ${num_fewshot_seeds || "NULL"},
+            ${override_batch_size || "NULL"},
+            ${max_samples || "NULL"},
+            ${job_id || "NULL"},
+            ${start_time ? `'${start_time}'` : "NULL"},
+            ${end_time ? `'${end_time}'` : "NULL"},
+            ${total_evaluation_time || "NULL"},
+            ${model_sha ? `'${model_sha}'` : "NULL"},
+            ${model_dtype ? `'${model_dtype}'` : "NULL"},
+            ${model_size || "NULL"},
+            ${lighteval_sha ? `'${lighteval_sha}'` : "NULL"}
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataTaskConfigs() {
+    const task_id = document.querySelector("input[name='task_id']").value || null;
+    const task_base_name = document.querySelector("input[name='task_base_name']").value || null;
+    const prompt_function = document.querySelector("input[name='prompt_function']").value || null;
+    const hf_repo = document.querySelector("input[name='hf_repo']").value || null;
+    const hf_subset = document.querySelector("input[name='hf_subset']").value || null;
+    const hf_revision = document.querySelector("input[name='hf_revision']").value || null;
+    const hf_filter = document.querySelector("input[name='hf_filter']").value || null;
+    const trust_dataset = document.querySelector("input[name='trust_dataset']").value || null;
+    const few_shots_split = document.querySelector("input[name='few_shots_split']").value || null;
+    const few_shots_select = document.querySelector("input[name='few_shots_select']").value || null;
+    const generation_size = document.querySelector("input[name='generation_size']").value || null;
+    const generation_grammar = document.querySelector("input[name='generation_grammar']").value || null;
+    const output_regex = document.querySelector("input[name='output_regex']").value || null;
+    const num_samples = document.querySelector("input[name='num_samples']").value || null;
+    const original_num_docs = document.querySelector("input[name='original_num_docs']").value || null;
+    const effective_num_docs = document.querySelector("input[name='effective_num_docs']").value || null;
+    const must_remove_duplicate_docs = document.querySelector("input[name='must_remove_duplicate_docs']").value || null;
+    const version = document.querySelector("input[name='version']").value || null;
+    const frozen = document.querySelector("input[name='frozen']").value || null;
+
+
+    const query = `
+        INSERT INTO task_configs (
+            task_id, task_base_name, prompt_function, hf_repo, hf_subset, hf_revision, hf_filter, few_shots_split, few_shots_select,
+            trust_dataset, generation_size, generation_grammar, output_regex, num_samples,
+            original_num_docs, effective_num_docs, must_remove_duplicate_docs,
+            version, frozen
+        ) VALUES (
+                     ${task_id !== null && task_id !== undefined ? `'${task_id}'` : "NULL"},
+                     ${task_base_name !== null && task_base_name !== undefined ? `'${task_base_name}'` : "NULL"},
+                     ${prompt_function !== null && prompt_function !== undefined ? `'${prompt_function}'` : "NULL"},
+                     ${hf_repo !== null && hf_repo !== undefined ? `'${hf_repo}'` : "NULL"},
+                     ${hf_subset !== null && hf_subset !== undefined ? `'${hf_subset}'` : "NULL"},
+                     ${hf_revision !== null && hf_revision !== undefined ? `'${hf_revision}'` : "NULL"},
+                     ${hf_filter !== null && hf_filter !== undefined ? `'${hf_filter}'` : "NULL"},
+                     ${few_shots_split !== null && few_shots_split !== undefined ? `'${few_shots_split}'` : "NULL"},
+                     ${few_shots_select !== null && few_shots_select !== undefined ? `${few_shots_select}` : "NULL"},
+                     ${trust_dataset !== null && trust_dataset !== undefined ? `'${trust_dataset}'` : "NULL"},
+                     ${generation_size !== null && generation_size !== undefined ? `'${generation_size}'` : "NULL"},
+                     ${generation_grammar !== null && generation_grammar !== undefined ? `${generation_grammar}` : "NULL"},
+                     ${output_regex !== null && output_regex !== undefined ? `'${output_regex}'` : "NULL"},
+                     ${num_samples !== null && num_samples !== undefined ? `${num_samples}` : "NULL"},
+                     ${original_num_docs !== null && original_num_docs !== undefined ? `'${original_num_docs}'` : "NULL"},
+                     ${effective_num_docs !== null && effective_num_docs !== undefined ? `'${effective_num_docs}'` : "NULL"},
+                     ${must_remove_duplicate_docs !== null && must_remove_duplicate_docs !== undefined ? `'${must_remove_duplicate_docs}'` : "NULL"},
+                     ${version !== null && version !== undefined ? `'${version}'` : "NULL"},
+                     ${frozen !== null && frozen !== undefined ? `'${frozen}'` : "NULL"}
+                 );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataTaskMetrics() {
+    const metric_id = document.querySelector("input[name='metric_id']").value || null;
+    const metric_name = document.querySelector("input[name='metric_name']").value || null;
+    const higher_is_better = document.querySelector("input[name='higher_is_better']").value || null;
+    const category = document.querySelector("input[name='category']").value || null;
+    const use_case = document.querySelector("input[name='use_case']").value || null;
+    const sample_level_fn = document.querySelector("input[name='sample_level_fn']").value || null;
+    const corpus_level_fn = document.querySelector("input[name='corpus_level_fn']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO task_metrics (
+              metric_id, metric_name, higher_is_better, category, 
+              use_case, sample_level_fn, corpus_level_fn
+        )VALUES (
+            ${metric_id ? `'${metric_id}'` : "NULL"},
+            ${metric_name ? `'${metric_name}'` : "NULL"},
+            ${higher_is_better || "NULL"},
+            ${category || "NULL"},
+            ${use_case || "NULL"},
+            ${sample_level_fn || "NULL"},
+            ${corpus_level_fn ? `'${corpus_level_fn}'` : "NULL"},
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataEvaluationResults() {
+    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const task_id = document.querySelector("input[name='task_id']").value || null;
+    const em = document.querySelector("input[name='em']").value || null;
+    const em_stderr = document.querySelector("input[name='em_stderr']").value || null;
+    const qem = document.querySelector("input[name='qem']").value || null;
+    const qem_stderr = document.querySelector("input[name='qem_stderr']").value || null;
+    const pem = document.querySelector("input[name='pem']").value || null;
+    const pem_stderr = document.querySelector("input[name='pem_stderr']").value || null;
+    const pqem = document.querySelector("input[name='pqem']").value || null;
+    const pqem_stderr = document.querySelector("input[name='pqem_stderr']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO evaluation_results (
+            run_id, task_id, em, em_stderr, qem, 
+            qem_stderr, pem, pem_stderr, pqem, pqem_stderr
+        ) VALUES (
+            ${run_id ? `'${run_id}'` : "NULL"},
+            ${task_id ? `'${task_id}'` : "NULL"},
+            ${em || "NULL"},
+            ${em_stderr || "NULL"},
+            ${qem || "NULL"},
+            ${qem_stderr || "NULL"},
+            ${pem ? `'${pem}'` : "NULL"},
+            ${pem_stderr ? `'${pem_stderr}'` : "NULL"},
+            ${pqem || "NULL"},
+            ${pqem_stderr ? `'${pqem_stderr}'` : "NULL"},
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataAggregatedEvaluationResults() {
+    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const result_type = document.querySelector("input[name='result_type']").value || null;
+    const em = document.querySelector("input[name='em']").value || null;
+    const em_stderr = document.querySelector("input[name='em_stderr']").value || null;
+    const qem = document.querySelector("input[name='qem']").value || null;
+    const qem_stderr = document.querySelector("input[name='qem_stderr']").value || null;
+    const pem = document.querySelector("input[name='pem']").value || null;
+    const pem_stderr = document.querySelector("input[name='pem_stderr']").value || null;
+    const pqem = document.querySelector("input[name='pqem']").value || null;
+    const pqem_stderr = document.querySelector("input[name='pqem_stderr']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO aggregated_evaluation_results (
+            run_id, result_type, em, em_stderr, qem, 
+            qem_stderr, pem, pem_stderr, pqem, pqem_stderr
+        ) VALUES (
+            ${run_id ? `'${run_id}'` : "NULL"},
+            ${result_type ? `'${result_type}'` : "NULL"},
+            ${em || "NULL"},
+            ${em_stderr || "NULL"},
+            ${qem || "NULL"},
+            ${qem_stderr || "NULL"},
+            ${pem ? `'${pem}'` : "NULL"},
+            ${pem_stderr ? `'${pem_stderr}'` : "NULL"},
+            ${pqem || "NULL"},
+            ${pqem_stderr ? `'${pqem_stderr}'` : "NULL"},
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataTasksSummaries() {
+    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const task_id = document.querySelector("input[name='task_id']").value || null;
+    const truncated = document.querySelector("input[name='truncated']").value || null;
+    const non_truncated = document.querySelector("input[name='non_truncated']").value || null;
+    const padded = document.querySelector("input[name='padded']").value || null;
+    const non_padded = document.querySelector("input[name='non_padded']").value || null;
+    const effective_few_shots = document.querySelector("input[name='effective_few_shots']").value || null;
+    const num_truncated_few_shots = document.querySelector("input[name='num_truncated_few_shots']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO task_summaries (
+            run_id, task_id, truncated, non_truncated, padded,
+            non_padded, effective_few_shots, num_truncated_few_shots
+        ) VALUES (
+            ${run_id ? `'${run_id}'` : "NULL"},
+            ${task_id ? `'${task_id}'` : "NULL"},
+            ${truncated || "NULL"},
+            ${non_truncated || "NULL"},
+            ${padded || "NULL"},
+            ${non_padded || "NULL"},
+            ${effective_few_shots ? `'${effective_few_shots}'` : "NULL"},
+            ${num_truncated_few_shots ? `'${num_truncated_few_shots}'` : "NULL"},
+        
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+async function insertDataGeneralSummary() {
+    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const truncated = document.querySelector("input[name='truncated']").value || null;
+    const non_truncated = document.querySelector("input[name='non_truncated']").value || null;
+    const padded = document.querySelector("input[name='padded']").value || null;
+    const non_padded = document.querySelector("input[name='non_padded']").value || null;
+    const num_truncated_few_shots = document.querySelector("input[name='num_truncated_few_shots']").value || null;
+
+    // Construire dynamiquement la requête
+    const query = `
+        INSERT INTO general_summary (
+            run_id, truncated, non_truncated, padded,
+            non_padded, num_truncated_few_shots
+        ) VALUES (
+            ${run_id ? `'${run_id}'` : "NULL"},
+            ${truncated || "NULL"},
+            ${non_truncated || "NULL"},
+            ${padded || "NULL"},
+            ${non_padded || "NULL"},
+            ${num_truncated_few_shots ? `'${num_truncated_few_shots}'` : "NULL"},
+        );
+    `;
+
+    try {
+        // Exécuter la requête
+        await conn.query(query);
+
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#12b912";
+        msgInfo.textContent = "Les données ont été insérées avec succès !";
+
+        console.log("Les données ont été insérées avec succès !");
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    } catch (error) {
+        msgInfo.style.display = "block";
+        msgInfo.style.color = "#af1111";
+        msgInfo.textContent = "Erreur lors de l'insertion des données";
+
+        document.querySelector("#run-query-btn").style.display = "none";
+        clearBtnCrud.style.display = "block";
+    }
+}
+
+document.querySelector("#read-all-data-btn").addEventListener("click", function() {
+    // Créer un map des IDs de boutons et leurs noms de table correspondants
+    const buttonTableMap = {
+        'evaluation-results-btn': 'evaluation_results',
+        'aggregated_evaluation-results-btn': 'aggregated_evaluation_results',
+        'evaluation-runs-btn': 'evaluation_runs',
+        'task-configs-btn': 'task_configs',
+        'task-metrics-btn': 'task_metrics',
+        'task-summaries-btn': 'task_summaries',
+        'general-summary-btn': 'general_summary'
+    };
+
+    // Trouver le bouton actif
+    const activeButton = document.querySelector('.read-simple-display-btn.active');
+
+    if (activeButton && buttonTableMap[activeButton.id]) {
+        readAllFromTable(buttonTableMap[activeButton.id]);
+
+        const clearButton = document.querySelector('#clear-btn-crud');
+        if (clearButton) {
+            clearButton.style.display = "block";
+        }
+    }
+});
+
+async function readAllFromTable(tableName) {
+    try {
+        const result = await conn.query(`select * from ${tableName};`);
+
+        if (sqlResultCrud) {
+            sqlResultCrud.setValue(result.toString());
+            sqlResultCrud.getWrapperElement().style.display = "block";
+            sqlResultCrud.refresh();
+        }
+    } catch(error) {
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#af1111";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Syntax error, please check your query!";
+        }
+    }
+}
+
+document.querySelector("#specific-columns-btn").addEventListener("click", function()
+{
+    runQueryBtnCRUD.style.display = "block";
+
+});
+
+async function readSpecificDataFromTable(tableName) {
+    // Récupérer toutes les checkboxes
+    const checkboxes = document.querySelectorAll('.column-item input[type="checkbox"]');
+
+    // Tableau pour stocker les colonnes sélectionnées
+    const selectedColumns = [];
+
+    // Vérifier chaque checkbox
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedColumns.push(checkbox.value);
+        }
+    });
+
+    // Vérifier si des colonnes ont été sélectionnées
+    if (selectedColumns.length > 0) {
+        try {
+            const columnsString = selectedColumns.join(', ');
+
+            // Construire et exécuter la requête
+            const query = `SELECT ${columnsString} FROM ${tableName};`;
+            const result = await conn.query(query);
+
+            // Afficher le résultat
+            sqlResultCrud.setValue(result.toString());
+            sqlResultCrud.getWrapperElement().style.display = "block";
+            sqlResultCrud.refresh();
+
+            // Afficher le bouton clear
+            clearBtnCrud.style.display = "block";
+
+        } catch(error) {
+            // Gestion des erreurs
+            msgInfo.style.color = "#af1111";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Syntax error, please check your query!";
+        }
+    } else {
+        // Message si aucune colonne n'est sélectionnée
+        msgInfo.style.color = "#af1111";
+        msgInfo.style.display = "block";
+        msgInfo.textContent = "Please select at least one column!";
+    }
+}
+

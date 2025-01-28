@@ -131,7 +131,7 @@
                     <!-- Bouton pour exécuter la requête SQL -->
                     <button class="run-query-btn" id="run-query-console">▶ Run Query</button>
                     <textarea id="sqlResult"></textarea>
-                    <button class="clear-btn">✖ Clear</button>
+                    <button class="clear-btn" id="clear-btn-main">✖ Clear</button>
                 </td>
             </tr>
             </tbody>
@@ -184,6 +184,9 @@
             </div>
 
             <!-- READ SECTION ------------------------------------------------------------------------------------>
+            <div id="read">
+
+            </div>
             <div class="read-contenant" style="display: none;">
                 <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
                 <div class="read-content">
@@ -316,38 +319,38 @@
 
 
                 </th>
-                <th>Résultat</th>
+                <th>Result</th>
             </thead>
             <tbody>
             <tr>
-                <td>
+                <td id="container-crud">
                     <!-- CREATE  -->
                     <ul id="table-list" style="display: none;">
-                        <li class="table-item ">
+                        <li class="table-item " id="table-evaluation-runs">
                             Table "evaluation_runs"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-task-metrics">
                             Table "task_metrics"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-task-configs">
                             Table "task_configs"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-general-summary">
                             Table "general_summary"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-tasks-evaluation-results">
                             Table "tasks_evaluation_results"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-tasks-summaries">
                             Table "tasks_summaries"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
-                        <li class="table-item">
+                        <li class="table-item" id="table-aggregated-evaluation-results">
                             Table "aggregated_evaluation_results"
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
@@ -415,8 +418,10 @@
 
                 </td>
                 <td>
-                    <p id="query-running-sentence" style="display: none;">Query is running...</p>
-                    <button id="run-query-btn" id ="run-query-crud" style="display: none;" >Add Entry</button>
+                    <p class="msg-info"></p>
+                    <textarea id="sqlResultCrud"></textarea>
+                    <button id="run-query-btn" id="run-query-crud" style="display: none;" >Add Entry</button>
+                    <button class="clear-btn" id="clear-btn-crud">✖ Clear</button>
                 </td>
             </tr>
             </tbody>
@@ -425,7 +430,7 @@
     </div>
 
     <div class="database-schema">
-        <img src="./assets/database_schema.png" alt="">
+        <img class="img-table" src="./assets/database_schema.png" alt="">
     </div>
 
     <footer>
