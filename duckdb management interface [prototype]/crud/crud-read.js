@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const readSimpleDisplayContenant = document.querySelector('.read-simple-display-contenant');
     const readSimpleDisplayBtn = document.getElementById('read-insert-btn'); // Correction ici
 
-    //  R E A D : simple display >> how to display data
+    // R E A D : simple display >> how to display data
     const tableList = document.getElementById('table-list2');
     const readHowDisplayContenant = document.querySelector('.read-how-display-contenant');
     //table evaluatoin results
@@ -287,6 +287,31 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }); 
 
+    ////GENERAL SUMMARY
+    generalSummaryBtn.addEventListener("click", function () {
+        // Afficher la liste des tables si elle est cachée
+        if (tableList.style.display === "none") {
+            tableList.style.display = "block"; // Affiche la liste complète des tables
+        }
+
+        // Cacher toutes les autres tables sauf celle sélectionnée
+        document.querySelectorAll(".table-item2").forEach(item => {
+            if (item !== generalStep) {
+                item.style.display = "none";
+            }
+        }); 
+
+        // Afficher la table sélectionnée
+        generalStep.style.display = 'flex';
+        // Afficher le conteneur READ >> simple display >> how to display data
+        readHowDisplayContenant.style.display = 'flex';
+        // Cacher le conteneur READ >> simple display
+        readSimpleDisplayContenant.style.display = 'none';
+        buffer = "Table \"general_summary\"";
+
+    }); 
+
+
 
 
 
@@ -308,6 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //INES CODER ICI POUR LA REQUETE
         //quand tu veux afficher tes données retire la phrase "query is running" 
         //queryRunningSentence.style.display = "none";
+
 
     });
 
