@@ -4,6 +4,7 @@ body {
     padding: 1em;
     background-color: #070707;
     color: #ffffff;
+    height: 1500px;
 }
 
 .header img {
@@ -83,13 +84,12 @@ body {
     overflow: hidden;
 
     width: 1271px;
-    height: 400px;
     flex-shrink: 0;
 
 }
 
 /* Stylisation du bouton "Run Query" */
-.run-query-btn {
+#run-query-btn {
     margin-left: 30%;
     margin-top: 20%;
     width: 268px;
@@ -107,7 +107,7 @@ body {
     color: #fff;
 }
 
-.run-query-btn:hover {
+#run-query-btn:hover {
     border: 1px solid var(--jauneDuckDB, #FFF100);
     background: #FFF100;
     color: #070707;
@@ -225,12 +225,101 @@ body {
     font-size: 17px;
 }
 
+.read-title{
+    font-size: 17px;
+}
+
+.update-title{
+    font-size: 17px;
+}
+
+.delete-title{
+    font-size: 17px;
+}
+
 .create-contenant{
     display: none;
     margin-left: 2%;
 }
+
+.read-contenant{
+    margin-left: 2%;
+}
+
+.update-contenant{
+    margin-left: 2%;
+}
+
+.delete-contenant{
+    margin-left: 2%;
+}
+
 /* Boutons CRUD - Style aligné avec sqlButton */
 .create-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+.read-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+.read-simple-display-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+.read-how-display-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+.update-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
+.delete-btn {
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
@@ -250,6 +339,34 @@ body {
     color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
 }
 
+.read-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
+.read-simple-display-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
+.read-how-display-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
+.update-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+.delete-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
 /* Effet de clic actif pour CRUD */
 .create-btn:active {
     background-color: #555555; /* Couleur encore plus claire */
@@ -257,8 +374,67 @@ body {
     color: #ffffff; /* Texte en blanc */
 }
 
+.read-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+.read-simple-display-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+.read-how-display-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+.update-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+.delete-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
 /* Ajout d'un style actif - similaire à sqlButton lorsqu'il est actif */
 .create-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+.read-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+.read-simple-display-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+.read-how-display-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
+.update-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+.delete-btn.active {
     background-color: #FFF100; /* Fond jaune */
     border-color: #FFF100; /* Bordure jaune */
     color: #000000; /* Texte noir */
@@ -295,6 +471,204 @@ body {
     display: flex;
     padding-top: 10px;
 }
+
+#table-list li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    width: max-content; /* Largeur spécifique */
+    height: 20px; /* Hauteur spécifique */
+    flex-shrink: 0; /* Empêche la réduction de taille */
+    border-radius: 30px; /* Coins arrondis */
+    border: 1px solid #FFF100; /* Bordure jaune */
+    background: rgba(204, 193, 0, 0.20); /* Fond semi-transparent */
+    font-size: 12px; /* Taille de texte réduite pour s'adapter à la petite taille */
+    margin-top: 5px; /* Espacement entre les étapes */
+    margin-left: 2%;
+    list-style: none; /* Supprime les puces */
+}
+
+.table-item {
+    cursor: pointer;
+}
+
+#form-container {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+#form-container h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+}
+
+#data-form label {
+    display: block;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+#data-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#data-form button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    background-color: #FFF100;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.table-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    width: min-content;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    border: 1px solid #FFF100;
+    background: rgba(204, 193, 0, 0.20);
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 2%;
+    list-style: none;
+    cursor: pointer;
+}
+
+
+.table-item2 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    width: max-content;
+    height: 20px;
+    flex-shrink: 0;
+    border-radius: 30px;
+    border: 1px solid #FFF100;
+    background: rgba(204, 193, 0, 0.20);
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 2%;
+    list-style: none;
+    cursor: pointer;
+}
+
+.insert-close-step {
+    margin-left: 10px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+}
+#form-container {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    width: fit-content;
+}
+
+h3, h4 {
+    margin-bottom: 15px;
+    font-size: 16px;
+    color: #333;
+}
+
+.form-grid {
+    display: flex;
+    gap: 50px;
+}
+
+ 
+
+.form-column, .form-inputs {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-column h4, .form-inputs h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.form-inputs div {
+    padding: 8px 0;
+    font-size: 14px;
+}
+
+.form-column div {
+    padding: 8px 0;
+    font-size: 14px;
+    margin-bottom: 15px;
+
+}
+
+
+input {
+    width: 200px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 11px;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #FFF100;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.selected {
+    background-color: #FFF100;
+    color: #000;
+    border: 1px solid #CCC;
+}
+
+
+#columns-container {
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 5px;
+    background: none;
+}
+
+#columns-container h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #ffffff;
+}
+
+.column-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.column-item input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.column-item label {
+    font-size: 14px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
 
 
 
