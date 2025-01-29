@@ -255,6 +255,33 @@
                 </div>
             </div>
 
+            <!-- UPDATE SECTION >> select the table to update ------------------------------------------------------------------------------------>
+            <div id="read">
+
+            <div class="update-simple-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="update-simple-display-content">
+                    <h2 class="update-simple-display-title" style="font-size: 17px;">Select the table you'd like to update ? </h2>
+                    <div class="update-simple-display-buttons">
+                        <button class="update-simple-display-btn" id="update-evaluation-results-btn">evaluation_results</button>
+                        <button class="update-simple-display-btn" id="update-evaluation-runs-btn">evaluation_runs</button>
+                        <button class="update-simple-display-btn" id="update-task-configs-btn">task_configs</button>
+                        <button class="update-simple-display-btn" id="update-task-metrics-btn">task_metrics</button>
+                        <button class="update-simple-display-btn" id="update-task-summaries-btn">tasks_summaries</button>
+                        <button class="update-simple-display-btn" id="update-general-summary-btn">general_summary</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-choose-columns-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="update-choose-columns-contenant">
+                    <h2 class="update-choose-columns-contenant-title" style="font-size: 17px;">Select the column(s) you want to update from the table </h2>
+                </div>
+            </div>
+
+            
+
             <!-- DELETE SECTION --------------------------------------------------------------->
             <div class="delete-contenant" style="display: none;">
                 <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
@@ -315,6 +342,12 @@
                     <div class="steps" id="update-step" style="display: none;">
                         <p>Update</p>
                         <img src="../assets/cross.png" alt="cross img" class="update-close-step" data-step="update-step">
+                    </div>
+
+                    <!-- UPDATE STEP >> choose table --------->
+                    <div class="steps" id="update-choose-table-step" style="display: none;">
+                        <p>Choose Table</p>
+                        <img src="../assets/cross.png" alt="cross img" class="update-choose-table-close-step" data-step="read-step">
                     </div>
 
                     <!-- DELETE STEP ------->

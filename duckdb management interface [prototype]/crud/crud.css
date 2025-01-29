@@ -20,7 +20,6 @@ body {
 #execute-img {
     width: 32%;
     height: 22%; /* Maintient les proportions de l'image */
-    margin-right: 10%; /* Ajoute un espace entre l'image et les boutons */
     margin-left: 5%;
     margin-top: 1.7%;
 }
