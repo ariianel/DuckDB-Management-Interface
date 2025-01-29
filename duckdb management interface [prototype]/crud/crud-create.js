@@ -128,12 +128,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Données des colonnes des tables (simulées)
     const tableColumns = {
         "Table \"evaluation_runs\"": [
-            "run_id", "model_name", "num_fewshot_seeds", "override_batch_size", 
+            "model_name", "num_fewshot_seeds", "override_batch_size",
             "max_samples", "job_id", "start_time", "end_time", "total_evaluation_time", 
             "model_sha", "model_dtype", "model_size", "lighteval_sha"
         ],
         "Table \"task_configs\"": [
-            "task_id", "task_base_name", "prompt_function", "hf_repo", 
+            "task_base_name", "prompt_function", "hf_repo",
             "hf_subset", "hf_revision", "hf_filter", "trust_dataset", 
             "few_shots_split", "few_shots_select", "generation_size", 
             "generation_grammar", "output_regex", "num_samples", 
@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "must_remove_duplicate_docs", "version", "frozen"
         ],
         "Table \"task_metrics\"": [
-            "metric_id", "metric_name", "higher_is_better", "category", 
+            "metric_name", "higher_is_better", "category",
             "use_case", "sample_level_fn", "corpus_level_fn"
         ],
         "Table \"tasks_evaluation_results\"": [
@@ -158,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
             "num_truncated_few_shots"
         ],
         "Table \"general_summary\"": [
-            "run_id", "truncated", "non_truncated", 
+            "truncated", "non_truncated",
             "padded", "non_padded", "num_truncated_few_shots"
         ]
     };

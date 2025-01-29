@@ -545,7 +545,7 @@ async function checkTableContents(conn, tableName) {
     console.log(`Table ${tableName} contient ${count} enregistrements`);
 
     if (count > 0) {
-        const data = await conn.query(`SELECT * FROM ${tableName} LIMIT 5`);
+        const data = await conn.query(`SELECT * FROM ${tableName} LIMIT 5;`);
         console.log(`Contenu de ${tableName}: ${data.toString()}`);
     }
     return count;
@@ -1661,7 +1661,11 @@ const buttonTableMap = {
 };
 
 async function insertDataEvaluationRuns() {
-    const run_id = document.querySelector("input[name='run_id']").value || null;
+
+    const idResult = await conn.query('SELECT run_id FROM evaluation_runs ORDER BY run_id DESC LIMIT 1;');
+    const id = await idResult.toArray();
+    const run_id = id[0]?.run_id + 1;
+
     const model_name = document.querySelector("input[name='model_name']").value || null;
     const num_fewshot_seeds = document.querySelector("input[name='num_fewshot_seeds']").value || null;
     const override_batch_size = document.querySelector("input[name='override_batch_size']").value || null;
@@ -1704,7 +1708,7 @@ async function insertDataEvaluationRuns() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -1715,7 +1719,7 @@ async function insertDataEvaluationRuns() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -1723,7 +1727,10 @@ async function insertDataEvaluationRuns() {
 }
 
 async function insertDataTaskConfigs() {
-    const task_id = document.querySelector("input[name='task_id']").value || null;
+    const idResult = await conn.query('SELECT task_id FROM task_configs ORDER BY task_id DESC LIMIT 1;');
+    const id = await idResult.toArray();
+    const task_id = id[0]?.task_id + 1;
+
     const task_base_name = document.querySelector("input[name='task_base_name']").value || null;
     const prompt_function = document.querySelector("input[name='prompt_function']").value || null;
     const hf_repo = document.querySelector("input[name='hf_repo']").value || null;
@@ -1779,7 +1786,7 @@ async function insertDataTaskConfigs() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -1790,7 +1797,7 @@ async function insertDataTaskConfigs() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -1798,7 +1805,10 @@ async function insertDataTaskConfigs() {
 }
 
 async function insertDataTaskMetrics() {
-    const metric_id = document.querySelector("input[name='metric_id']").value || null;
+    const idResult = await conn.query('SELECT metric_id FROM task_metrics ORDER BY metric_id DESC LIMIT 1;');
+    const id = await idResult.toArray();
+    const metric_id = id[0]?.metric_id + 1;
+
     const metric_name = document.querySelector("input[name='metric_name']").value || null;
     const higher_is_better = document.querySelector("input[name='higher_is_better']").value || null;
     const category = document.querySelector("input[name='category']").value || null;
@@ -1828,7 +1838,7 @@ async function insertDataTaskMetrics() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -1839,7 +1849,7 @@ async function insertDataTaskMetrics() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -1883,7 +1893,7 @@ async function insertDataEvaluationResults() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -1894,7 +1904,7 @@ async function insertDataEvaluationResults() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -1938,7 +1948,7 @@ async function insertDataAggregatedEvaluationResults() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -1949,7 +1959,7 @@ async function insertDataAggregatedEvaluationResults() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -1990,7 +2000,7 @@ async function insertDataTasksSummaries() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -2001,7 +2011,7 @@ async function insertDataTasksSummaries() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
@@ -2009,7 +2019,10 @@ async function insertDataTasksSummaries() {
 }
 
 async function insertDataGeneralSummary() {
-    const run_id = document.querySelector("input[name='run_id']").value || null;
+    const idResult = await conn.query('SELECT run_id FROM general_summary ORDER BY run_id DESC LIMIT 1;');
+    const id = await idResult.toArray();
+    const run_id = id[0]?.run_id + 1;
+
     const truncated = document.querySelector("input[name='truncated']").value || null;
     const non_truncated = document.querySelector("input[name='non_truncated']").value || null;
     const padded = document.querySelector("input[name='padded']").value || null;
@@ -2037,7 +2050,7 @@ async function insertDataGeneralSummary() {
 
         msgInfo.style.display = "block";
         msgInfo.style.color = "#12b912";
-        msgInfo.textContent = "Les données ont été insérées avec succès !";
+        msgInfo.textContent = "The data has been successfully inserted!";
 
         console.log("Les données ont été insérées avec succès !");
 
@@ -2048,7 +2061,7 @@ async function insertDataGeneralSummary() {
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
-        msgInfo.textContent = "Erreur lors de l'insertion des données";
+        msgInfo.textContent = "Error inserting data";
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
