@@ -122,6 +122,23 @@ async function saveToLocalStorage(conn) {
         const evaluationResults = dataEvaluationResults.toArray();
         localStorage.setItem('duckdb_evaluation_results', JSON.stringify(evaluationResults));
 
+        // Save sequence current values
+        /*const sequences = [
+            'run_id_sequence',
+            'metric_id_sequence',
+            'task_id_sequence',
+            'general_id_sequence'
+        ];*/
+
+        // Get and save each sequence value
+        /*for (const seqName of sequences) {
+            const seqValue = await conn.query(`
+                SELECT last_value FROM ${seqName};
+            `);
+            const currentValue = seqValue.toArray()[0].last_value;
+            localStorage.setItem(`duckdb_${seqName}`, currentValue.toString());
+        }*/
+
         console.log('Données sauvegardées dans localStorage');
     } catch (error) {
         console.error('Erreur lors de la sauvegarde:', error);
@@ -135,6 +152,25 @@ function formatToTimestamp(dateString) {
 
 async function loadFromLocalStorage(conn) {
     try {
+        // Restore sequence values first
+        /*const sequences = [
+            'run_id_sequence',
+            'metric_id_sequence',
+            'task_id_sequence',
+            'general_id_sequence'
+        ];
+
+        for (const seqName of sequences) {
+            const savedValue = localStorage.getItem(`duckdb_${seqName}`);
+            if (savedValue) {
+                // Reset sequence to saved value
+                await conn.query(`
+                    DROP SEQUENCE IF EXISTS ${seqName};
+                    CREATE SEQUENCE ${seqName} START ${parseInt(savedValue) + 1};
+                `);
+            }
+        }*/
+
         const savedDataEvaluationRuns = localStorage.getItem('duckdb_evaluation_runs');
         if (savedDataEvaluationRuns) {
             const evaluationRuns = JSON.parse(savedDataEvaluationRuns);
@@ -1435,6 +1471,8 @@ clearBtnCrud.addEventListener("click", function(){
     msgInfo.style.display = "none";
     msgInfo.textContent = "";
     clearBtnCrud.style.display = "none";
+    jsonDisplayContainer.style.display = "none"
+    jsonDisplayContainer.textContent = "";
 
     const tdChildren = document.querySelectorAll("#container-crud > *");
 
@@ -1672,6 +1710,8 @@ async function insertDataEvaluationRuns() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1745,6 +1785,8 @@ async function insertDataTaskConfigs() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1792,6 +1834,8 @@ async function insertDataTaskMetrics() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1845,6 +1889,8 @@ async function insertDataEvaluationResults() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1898,6 +1944,8 @@ async function insertDataAggregatedEvaluationResults() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1948,6 +1996,8 @@ async function insertDataTasksSummaries() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -1993,6 +2043,8 @@ async function insertDataGeneralSummary() {
 
         document.querySelector("#run-query-btn").style.display = "none";
         clearBtnCrud.style.display = "block";
+
+        await saveToLocalStorage(conn);
     } catch (error) {
         msgInfo.style.display = "block";
         msgInfo.style.color = "#af1111";
@@ -2097,4 +2149,238 @@ async function readSpecificDataFromTable(tableName) {
         msgInfo.textContent = "Please select at least one column!";
     }
 }
+
+// Gestionnaire d'événements pour l'interface utilisateur
+const processJsonBtn = document.getElementById('process-json-btn');
+const jsonFileInput = document.getElementById('json-file-input');
+const jsonDisplayContainer = document.getElementById('json-display-container');
+jsonDisplayContainer.style.display = "none"
+
+processJsonBtn.addEventListener('click', () => {
+    const file = jsonFileInput.files[0];
+
+    if (!file) {
+        alert('Please select a JSON file.');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        try {
+            const jsonContent = JSON.parse(event.target.result);
+            jsonDisplayContainer.style.display = "block"
+            jsonDisplayContainer.textContent = JSON.stringify(jsonContent, null, 4);
+
+            console.log("Fichier JSON chargé :", jsonContent);
+
+            msgInfo.style.display = "block";
+            clearBtnCrud.style.display = "block";
+
+            await insertDataFromJsonFile(jsonContent);
+        } catch (error) {
+            alert('Invalid JSON file.');
+            console.error(error);
+        }
+    };
+    reader.readAsText(file);
+});
+
+async function insertDataFromJsonFile(jsonData) {
+    try {
+        // Convert JSON data into array format if it isn't already
+        const jsonArray = Array.isArray(jsonData) ? jsonData : [jsonData];
+
+        // Create a buffer from the JSON data
+        const jsonBuffer = new TextEncoder().encode(JSON.stringify(jsonArray));
+
+        // Register the buffer as a virtual file in DuckDB
+        await db.registerFileBuffer('data.json', jsonBuffer);
+
+        // Create a table from the JSON data using DuckDB's auto schema detection
+        await conn.query(`
+            CREATE OR REPLACE TABLE temp_data AS 
+            SELECT * FROM read_json_auto('data.json');
+        `);
+
+        console.log("Data successfully loaded into DuckDB!");
+
+        // Verify the data was loaded correctly
+        const result = await conn.query("SELECT * FROM temp_data;");
+        const data = await result.toArray();
+        console.log(data.toString());
+
+        // Get the highest run_id
+        const idResult = await conn.query('SELECT run_id FROM evaluation_runs ORDER BY run_id DESC LIMIT 1;');
+        const id = await idResult.toArray();
+        console.log(id.toString());
+
+        const highestRunId = id[0]?.run_id + 1;
+        console.log("Highest run_id: ", highestRunId);
+
+        // Insertion d'evaluation runs
+        await conn.query(`
+            INSERT INTO evaluation_runs (
+                run_id, model_name, num_fewshot_seeds, override_batch_size, 
+                max_samples, job_id, start_time, end_time, 
+                total_evaluation_time, model_sha, model_dtype, 
+                model_size, lighteval_sha
+            )
+            SELECT 
+                ${highestRunId},
+                config_general.model_name,
+                config_general.num_fewshot_seeds,
+                config_general.override_batch_size,
+                config_general.max_samples,
+                config_general.job_id,
+                TO_TIMESTAMP(config_general.start_time),
+                TO_TIMESTAMP(config_general.end_time),
+                config_general.total_evaluation_time_secondes,
+                config_general.model_sha,
+                config_general.model_dtype,
+                config_general.model_size,
+                config_general.lighteval_sha
+            FROM temp_data
+        `);
+
+        const result1 = await conn.query("SELECT * FROM evaluation_runs;");
+        const data1 = await result1.toArray();
+        console.log(data1.toString());
+
+        await conn.query(`
+            INSERT INTO general_summary (
+                run_id, truncated, non_truncated, padded,
+                non_padded, num_truncated_few_shots
+            )
+            SELECT
+                ${highestRunId},
+                summary_general.truncated,
+                summary_general.non_truncated,
+                summary_general.padded,
+                summary_general.non_padded,
+                summary_general.num_truncated_few_shots
+            FROM temp_data;
+        `);
+
+        const result2 = await conn.query(`SELECT * FROM general_summary WHERE run_id = ${highestRunId};`);
+        const data2 = await result2.toArray();
+        console.log(data2.toString());
+
+        taskSummary = jsonData.summary_tasks;
+        taskSummary_allArray = Object.keys(taskSummary)
+            .filter(key => key !== "helm|mmlu:_average|5" && key !== "all")
+            .map(key => {
+                const result = taskSummary[key];
+                return {
+                    key,
+                    truncated: result.truncated,
+                    non_truncated: result.non_truncated,
+                    padded: result.padded,
+                    non_padded: result.non_padded,
+                    effective_few_shots: result.effective_few_shots,
+                    num_truncated_few_shots: result.num_truncated_few_shots,
+                };
+            });
+
+        for (const task of taskSummary_allArray) {
+            await conn.query(`
+                 INSERT INTO task_summaries (run_id, task_id, truncated, non_truncated, 
+                                          padded ,non_padded ,effective_few_shots ,
+                                          num_truncated_few_shots)
+                VALUES (${highestRunId}, (SELECT t.task_id FROM task_configs as t WHERE '${task.key}' LIKE '%' || t.task_base_name || '%'),
+                    ${task.truncated}, ${task.non_truncated},
+                    ${task.padded},${task.non_padded},
+                    ${task.effective_few_shots},${task.num_truncated_few_shots});
+            `);
+        }
+
+        const result3 = await conn.query(`SELECT * FROM task_summaries WHERE run_id = ${highestRunId} LIMIT 5;`);
+        const data3 = await result3.toArray();
+        console.log(data3.toString());
+
+        results = jsonData.results;
+        resultArray = Object.keys(results)
+            .filter(key => key !== "helm|mmlu:_average|5" && key !== "all")
+            .map(key => {
+                const result = results[key];
+                return {
+                    key,
+                    em: result.em,
+                    em_stderr: result.em_stderr,
+                    qem: result.qem,
+                    qem_stderr: result.qem_stderr,
+                    pem: result.pem,
+                    pem_stderr: result.pem_stderr,
+                    pqem: result.pqem,
+                    pqem_stderr: result.pqem_stderr,
+                };
+            });
+
+        for (const result of resultArray) {
+            await conn.query(`
+                INSERT INTO evaluation_results (run_id, task_id, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
+                VALUES (${highestRunId},
+                       (SELECT task_id FROM task_configs WHERE '${result.key}' LIKE '%' || task_base_name || '%'),
+                       ${result.em}, ${result.em_stderr},
+                       ${result.qem}, ${result.qem_stderr},
+                       ${result.pem}, ${result.pem_stderr},
+                       ${result.pqem}, ${result.pqem_stderr});
+            `);
+        }
+
+        const result4 = await conn.query(`SELECT * FROM evaluation_results WHERE run_id = ${highestRunId} LIMIT 5;`);
+        const data4 = await result4.toArray();
+        console.log(data4.toString());
+
+        average_all = jsonData.results;
+        average_allArray = Object.keys(average_all)
+            .filter(key => key === "helm|mmlu:_average|5" ||  key === "all")
+            .map(key => {
+                const result = average_all[key];
+                return {
+                    key,
+                    em: result.em,
+                    em_stderr: result.em_stderr,
+                    qem: result.qem,
+                    qem_stderr: result.qem_stderr,
+                    pem: result.pem,
+                    pem_stderr: result.pem_stderr,
+                    pqem: result.pqem,
+                    pqem_stderr: result.pqem_stderr,
+                };
+            });
+
+        for (const result of average_allArray) {
+
+            const resultType = result.key === "all" ? "all" : "average";
+
+            await conn.query(`
+                INSERT INTO aggregated_evaluation_results (run_id, result_type, em, em_stderr, qem, qem_stderr, pem, pem_stderr, pqem, pqem_stderr)
+                VALUES (${highestRunId}, '${resultType}',
+                       ${result.em}, ${result.em_stderr},
+                       ${result.qem}, ${result.qem_stderr},
+                       ${result.pem}, ${result.pem_stderr},
+                       ${result.pqem}, ${result.pqem_stderr});
+            `);
+        }
+
+        const result5 = await conn.query(`SELECT * FROM aggregated_evaluation_results WHERE run_id = ${highestRunId} LIMIT 5;`);
+        const data5 = await result5.toArray();
+        console.log(data5.toString());
+
+        msgInfo.textContent = "Your JSON was succesful load ! ";
+        msgInfo.style.color = "#12b912";
+
+        await saveToLocalStorage(conn);
+
+    } catch (error) {
+        msgInfo.textContent = "Error loading data into DuckDB";
+        msgInfo.style.color = "#af1111";
+    }
+}
+
+
+
+
+
+
 

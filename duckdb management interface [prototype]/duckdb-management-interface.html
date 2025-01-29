@@ -370,9 +370,6 @@
                         <h3>Import JSON File</h3>
                         <input type="file" id="json-file-input" accept=".json" />
                         <button id="process-json-btn">Process JSON</button>
-                        <div id="json-display-container" style="margin-top: 10px; overflow-y: auto; max-height: 300px;">
-                            <!-- Contenu du fichier JSON sera affiché ici -->
-                        </div>
                     </div>
 
                     <!-- READ : créer un deuxième sinon le js de read prend le comportement de create sur ses composants -->
@@ -438,6 +435,9 @@
                 </td>
                 <td>
                     <p class="msg-info"></p>
+                    <div id="json-display-container" style="margin-top: 10px; overflow-y: auto; max-height: 300px;">
+                        <!-- Contenu du fichier JSON sera affiché ici -->
+                    </div>
                     <textarea id="sqlResultCrud"></textarea>
                     <button id="run-query-btn" id="run-query-crud" style="display: none;" >Add Entry</button>
                     <button class="clear-btn" id="clear-btn-crud">✖ Clear</button>

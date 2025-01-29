@@ -88,25 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Événement pour traiter le fichier JSON
-    processJsonBtn.addEventListener('click', () => {
-        const file = jsonFileInput.files[0];
 
-        if (!file) {
-            alert('Please select a JSON file.');
-            return;
-        }
-
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            try {
-                const jsonContent = JSON.parse(event.target.result);
-                jsonDisplayContainer.textContent = JSON.stringify(jsonContent, null, 4); // Affiche le JSON formaté
-            } catch (error) {
-                alert('Invalid JSON file.');
-            }
-        };
-        reader.readAsText(file);
-    });
 
     // GESTION TABLE OU INSERER LES DONNEE
 
