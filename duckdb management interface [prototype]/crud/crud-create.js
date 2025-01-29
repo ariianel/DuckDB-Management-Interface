@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     createBtn.addEventListener('click', function () {
         crudContenant.style.display = 'none';
         createContenant.style.display = 'flex';
-        createBtn.classList.remove('active');
+
         showStep('create-step');
         hideStep('update-step');
         hideStep('delete-step');
@@ -42,6 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const insertDataStep = document.getElementById("insert-data-step");
     const closeStepBtn = document.querySelector("#insert-data-step .insert-close-step");
     const runQuery = document.getElementById("run-query-btn");
+    const importJsonFileBtn = document.getElementById("import-json-file-btn");
 
     runQuery.addEventListener("click", function () {
 
@@ -49,20 +50,62 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // GESTION DES ETAPES ---
 
-    // Clic sur la croix de l'étape en cours pour masquer cette même étape
-    closeStepBtn.addEventListener("click", function () {
-        insertDataStep.style.display = "none"; // Cache l'étape
-        tableList.style.display = "none"; // Cache la liste des tables
-        formContainer.style.display = "none";
-  
-    });
-
     // Affichage de la liste des tables au clic sur "Insert data into Existing Table"
     insertBtn.addEventListener("click", function () {
         tableList.style.display = "block";
         insertDataStep.style.display = "flex"; // Affiche l'étape
         tableList.style.display = "block"; // Affiche la liste des tables
         runQuery.style.display = "block";
+    });
+
+    // Clic sur la croix de l'étape en cours pour masquer cette même étape
+    closeStepBtn.addEventListener("click", function () {
+        insertDataStep.style.display = "none"; // Cache l'étape
+        tableList.style.display = "none"; // Cache la liste des tables
+        formContainer.style.display = "none";
+    
+    });
+
+    //Affiche l'ajout d'un JSON file <<<<<<<<<<<<<<<<<
+    const jsonImportSection = document.getElementById('json-import-section');
+    const jsonFileInput = document.getElementById('json-file-input');
+    const jsonDisplayContainer = document.getElementById('json-display-container');
+    const processJsonBtn = document.getElementById('process-json-btn');
+    const importJsonFileStep = document.getElementById("import-json-file-step");
+    const closeJsonFileStep = document.querySelector("#import-json-file-step .import-json-file-step");
+
+
+    // Événement pour afficher/masquer la section JSON
+    importJsonFileBtn.addEventListener('click', () => {
+        jsonImportSection.style.display = jsonImportSection.style.display === 'none' ? 'block' : 'none';
+        importJsonFileStep.style.display = "flex";
+    });
+
+    //evenement quand on clique sur la creoix de l'étape
+    closeJsonFileStep.addEventListener("click", function () {
+        importJsonFileStep.style.display = "none";
+        jsonImportSection.style.display = "none"    
+    });
+
+    // Événement pour traiter le fichier JSON
+    processJsonBtn.addEventListener('click', () => {
+        const file = jsonFileInput.files[0];
+
+        if (!file) {
+            alert('Please select a JSON file.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+            try {
+                const jsonContent = JSON.parse(event.target.result);
+                jsonDisplayContainer.textContent = JSON.stringify(jsonContent, null, 4); // Affiche le JSON formaté
+            } catch (error) {
+                alert('Invalid JSON file.');
+            }
+        };
+        reader.readAsText(file);
     });
 
     // GESTION TABLE OU INSERER LES DONNEE
@@ -218,9 +261,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // Afficher le conteneur CRUD et masquer le conteneur Create
             crudContenant.style.display = 'flex';
             createContenant.style.display = 'none';
+            jsonImportSection.style.display = 'none';
         });
     });
-
     
     // Gestion des clics sur la croix de chaque table listée pour annuler
     closeButtons.forEach(button => {

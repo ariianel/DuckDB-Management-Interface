@@ -445,7 +445,7 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 5px 10px;
-    width: min-content; /* Largeur spécifique */
+    width: max-content; /* Largeur spécifique */
     height: 20px; /* Hauteur spécifique */
     flex-shrink: 0; /* Empêche la réduction de taille */
     border-radius: 30px; /* Coins arrondis */
@@ -667,6 +667,24 @@ button {
     font-size: 14px;
     color: #ffffff;
     cursor: pointer;
+}
+
+#json-import-section {
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #000000;
+}
+
+#json-import-section h3 {
+    color: #fff;
+}
+
+#json-display-container {
+    padding: 10px;
+    background-color: #000000;
+    white-space: pre-wrap;
+    font-family: monospace;
+    font-size: 14px;
 }
 
 

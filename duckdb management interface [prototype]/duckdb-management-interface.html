@@ -18,6 +18,7 @@
 
     <!-- Stylesheet pour la mise en forme de la page -->
     <link rel="stylesheet" href="main/main.css">
+    <link rel="stylesheet" href="./crud/crud.css">
 
     <!-- CodeMirror: Bibliothèque pour l'éditeur de code SQL -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
@@ -161,6 +162,7 @@
                 </div>
             </div>
 
+
             <!-- CREATE SECTION --------------------------------------------------------------------------->
             <div class="create-contenant">
                 <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
@@ -168,8 +170,9 @@
                     <h2 class="create-title">What would you like to create ? </h2>
                     <div class="create-buttons">
                         <button class="create-btn" id="insert-btn">Insert data into Existing Table</button>
+                        <button class="create-btn" id="import-json-file-btn">Import a JSON file</button>
                         <button class="create-btn" id="create-view-btn">Create a view</button>
-                        <button class="create-btn" id="custom-quert-btn">Custom Query</button>
+                        <button class="create-btn" id="custom-query-btn">Custom Query</button>
 
                     </div>
                 </div>
@@ -290,6 +293,12 @@
                         <img src="../assets/cross.png" alt="cross img" class="insert-close-step" data-step="create-view-step">
                     </div>
 
+                    <!-- CREATE >> import JSON file -->
+                    <div class="steps" id="import-json-file-step" style="display: none;">
+                        <p>JSON file</p>
+                        <img src="../assets/cross.png" alt="cross img" class="import-json-file-step" data-step="import-json-file-step">
+                    </div>
+
                     <!-- READ STEP --------->
                     <div class="steps" id="read-step" style="display: none;">
                         <p>Read</p>
@@ -355,6 +364,16 @@
                             <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
                         </li>
                     </ul>
+
+                    <!-- CREATE :  Section pour importer un fichier JSON -->
+                    <div id="json-import-section" style="display: none; margin-top: 20px;">
+                        <h3>Import JSON File</h3>
+                        <input type="file" id="json-file-input" accept=".json" />
+                        <button id="process-json-btn">Process JSON</button>
+                        <div id="json-display-container" style="margin-top: 10px; overflow-y: auto; max-height: 300px;">
+                            <!-- Contenu du fichier JSON sera affiché ici -->
+                        </div>
+                    </div>
 
                     <!-- READ : créer un deuxième sinon le js de read prend le comportement de create sur ses composants -->
                     <ul id="table-list2" style="display: none;">
