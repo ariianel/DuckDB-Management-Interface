@@ -230,20 +230,51 @@ document.addEventListener("DOMContentLoaded", function () {
         const step = document.getElementById(stepId);
         if (step) {
             step.style.display = 'none';
+
+            if(step.classList.contains('crud-step')){
+                const crudButtons = document.querySelectorAll('.crud-btn');
+
+                crudButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.classList.remove('tmp');
+                });
+            }
+
+            if(step.classList.contains('create-btn-step')){
+                const createButtons = document.querySelectorAll('.create-btn');
+
+                createButtons.forEach(btn => {
+                    btn.classList.remove('tmp');
+                    btn.classList.remove('selected');
+                });
+            }
+
+            if(step.classList.contains('read-btn-step')){
+                const readButtons = document.querySelectorAll('.read-btn');
+
+                readButtons.forEach(btn => {
+                    btn.classList.remove('tmp');
+                    btn.classList.remove('selected');
+                });
+            }
+
         }
     }
 
     // Gérer la suppression des étapes lorsque l'utilisateur clique sur la croix
-    const closeSteps = document.querySelectorAll('.create-close-step');
+    const closeSteps = document.querySelectorAll('.steps');
     closeSteps.forEach(cross => {
         cross.addEventListener('click', function () {
-            const stepId = this.getAttribute('data-step'); // Récupère l'étape à fermer
+            const stepId = this.getAttribute('id'); // Récupère l'étape à fermer
             hideStep(stepId);
 
             // Afficher le conteneur CRUD et masquer le conteneur Create
-            crudContenant.style.display = 'flex';
-            createContenant.style.display = 'none';
-            jsonImportSection.style.display = 'none';
+            if(stepId === 'create-step'){
+                crudContenant.style.display = 'flex';
+                createContenant.style.display = 'none';
+                jsonImportSection.style.display = 'none';
+            }
+
         });
     });
     

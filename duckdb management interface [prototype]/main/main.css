@@ -30,29 +30,6 @@ body {
 }
 
 /* Centrage de la div contenant les boutons */
-.button-contenant {
-    display: flex;
-    justify-content: center; /* Centre les boutons horizontalement */
-    align-items: center; /* Centre les boutons verticalement */
-    gap: 20px; /* Espace entre les boutons */
-    margin-top: 45px; /* Marge pour espacer du contenu au-dessus si nécessaire */
-    margin-bottom: 30px;
-}
-
-/* Style de base pour les boutons */
-.button-contenant button {
-    width: 260px;
-    height: 45px;
-    flex-shrink: 0;
-    border-radius: 30px;
-    background: #070707;
-    color: #fff;
-    font-size: large;
-    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
-    transition: all 0.3s ease; /* Transition pour un effet fluide */
-    cursor: pointer;
-
-}
 
 /* Style actif pour sqlButton */
 #sqlButton.active {
@@ -238,7 +215,8 @@ td:last-child {
 
 /* Espacement spécifique entre l'image et les boutons */
 .img-buttons-contenant {
-    display: block; /* Mode normal par défaut */
+    display: flex; /* Mode normal par défaut */
+    flex-direction: row;
     margin-bottom: 20px; /* Ajoute un espace en bas de l'image */
 }
 
@@ -251,9 +229,8 @@ td:last-child {
 
 /* Conteneur pour les queries */
 .queries-contenant {
-
     margin-top: 20px; /* Ajoute un espace au-dessus des requêtes */
-    gap: 15px;
+    gap: 10px;
     display: none; /* Caché par défaut */
     opacity: 0; /* Invisible visuellement */
     transition: opacity 0.3s ease;
@@ -287,17 +264,21 @@ td:last-child {
 
 /* Cercle avec numéro */
 .query-circle {
-    width: 40px; /* Largeur du cercle */
-    height: 40px; /* Hauteur du cercle */
-    border-radius: 50%; /* Rend le conteneur circulaire */
-    color: #ACABAB; /* Texte blanc */
-    font-size: 16px; /* Taille du texte */
-    font-weight: bold; /* Texte en gras */
-    display: flex; /* Centrer le texte dans le cercle */
+    min-width: 35px; /* Largeur minimale fixe */
+    min-height: 35px; /* Hauteur minimale fixe */
+    width: 35px; /* Largeur fixe */
+    height: 35px; /* Hauteur fixe */
+    flex-shrink: 0; /* Empêche le cercle de se rétrécir */
+    border-radius: 50%;
+    background-color: #252525; /* Ajoute une couleur de fond pour mieux voir le cercle */
+    color: #ACABAB;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px; /* Espace entre le cercle et le texte */
-    transition: background-color 0.3s; /* Animation sur changement de couleur */
+    margin-right: 10px;
+    transition: background-color 0.3s;
 }
 
 /* Texte des requêtes */

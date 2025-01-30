@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleActive(sqlButton, queryButton);
 
         // Affiche le conteneur et le logo en mode "block"
-        buttonContainer.style.display = 'block';
+        buttonContainer.style.display = 'flex';
         logo.style.display = 'block';
     });
 

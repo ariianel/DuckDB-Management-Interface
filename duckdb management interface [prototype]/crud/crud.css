@@ -32,16 +32,15 @@ body {
 
 /* Centrage de la div contenant les boutons */
 .button-contenant {
+    margin-left: 5%;
     display: flex;
     justify-content: center; /* Centre les boutons horizontalement */
     align-items: center; /* Centre les boutons verticalement */
-    gap: 20px; /* Espace entre les boutons */
-    margin-top: 45px; /* Marge pour espacer du contenu au-dessus si nécessaire */
-    margin-bottom: 30px;
 }
 
 /* Style de base pour les boutons */
 .button-contenant button {
+    margin: 30px 70px 0px 0px;
     width: 260px;
     height: 45px;
     flex-shrink: 0;
@@ -171,30 +170,33 @@ body {
     cursor: pointer; /* Indique que l'icône est interactive */
 }
 
-.img-buttons-contenant{
-    display: flex;
-}
-
 .crud-title{
     font-size: 17px;
 }
 
 .crud-contenant{
     display: flex;
-    margin-left: 2%;
+    flex-direction: row;
 }
 /* Boutons CRUD - Style aligné avec sqlButton */
 .crud-btn {
+    margin: 30px 25px 25px 0px;
+    align-self: center;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
     border-radius: 30px;
-    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
     font-size: 14px; /* Taille de texte identique */
     font-weight: bold; /* Texte en gras */
     cursor: pointer; /* Indicateur de clic */
     text-transform: uppercase; /* Texte en majuscules comme sqlButton */
     transition: all 0.3s ease; /* Animation fluide */
+}
+
+.crud-buttons{
+    margin-left: 5%;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Effet de survol des boutons CRUD */
@@ -255,18 +257,20 @@ body {
 
 /* Boutons CRUD - Style aligné avec sqlButton */
 .create-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
     border-radius: 30px;
     padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
-    font-size: 14px; /* Taille de texte identique */
+    font-size: 12px; /* Taille de texte identique */
     font-weight: bold; /* Texte en gras */
     cursor: pointer; /* Indicateur de clic */
     text-transform: uppercase; /* Texte en majuscules comme sqlButton */
     transition: all 0.3s ease; /* Animation fluide */
 }
 .read-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
@@ -280,6 +284,7 @@ body {
 }
 
 .read-simple-display-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
@@ -293,6 +298,7 @@ body {
 }
 
 .read-how-display-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
@@ -306,6 +312,7 @@ body {
 }
 
 .update-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */
@@ -319,6 +326,7 @@ body {
 }
 
 .delete-btn {
+    margin: 30px 25px 25px 0px;
     background: #070707;
     color: #ffffff; /* Texte en blanc */
     border: 2px solid #555555; /* Bordure similaire */

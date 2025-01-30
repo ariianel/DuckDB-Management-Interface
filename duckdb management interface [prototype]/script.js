@@ -1497,6 +1497,7 @@ clearBtnCrud.addEventListener("click", function(){
 
     createButtons.forEach(btn => {
         btn.classList.remove('tmp');
+        btn.classList.remove('selected');
     });
 
     const readSimpleButtons = document.querySelectorAll('.read-simple-display-btn');
@@ -1592,6 +1593,8 @@ tableItems.forEach(item => {
 });
 
 let runQueryBtnCRUD = document.querySelector("#run-query-btn");
+
+runQueryBtnCRUD.style.display = "none";
 
 runQueryBtnCRUD.addEventListener("click", executeCRUD);
 
