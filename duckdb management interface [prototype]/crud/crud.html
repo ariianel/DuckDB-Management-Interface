@@ -46,8 +46,9 @@
                     <h2 class="create-title">What would you like to create ? </h2>
                     <div class="create-buttons">
                         <button class="create-btn" id="insert-btn">Insert data into Existing Table</button>
+                        <button class="create-btn" id="import-json-file-btn">Import a JSON file</button>
                         <button class="create-btn" id="create-view-btn">Create a view</button>
-                        <button class="create-btn" id="custom-quert-btn">Custom Query</button>
+                        <button class="create-btn" id="custom-query-btn">Custom Query</button>
 
                     </div>
                 </div>
@@ -163,6 +164,12 @@
                         <div class="steps" id="insert-data-step" style="display: none;">
                             <p>Insert data</p>
                             <img src="../assets/cross.png" alt="cross img" class="insert-close-step" data-step="create-view-step">
+                        </div>
+
+                        <!-- CREATE >> import JSON file -->
+                        <div class="steps" id="import-json-file-step" style="display: none;">
+                            <p>Import JSON file</p>
+                            <img src="../assets/cross.png" alt="cross img" class="import-json-file-step" data-step="import-json-file-step">
                         </div>
 
                         <!-- READ STEP --------->
@@ -294,20 +301,18 @@
                     </td>
                     <td>
                         <p id="query-running-sentence" style="display: none;">Query is running...</p>
-                        <button id="run-query-btn" id ="run-query-crud" style="display: none;" >Add Entry</button>
+                        <button id="run-query-btn" style="display: none;" >Add Entry</button>
                     </td>
                 </tr>
             </tbody>
         </table>
 
-    </div>
-
+    </div>  
+    
     <script src="crud-create.js"></script>
     <script src="crud-read.js"></script>
     <script src="crud-update.js"></script>
     <script src="crud-delete.js"></script>
-
-    <script type="module" src="../script.js"></script>
 
 
     
