@@ -472,7 +472,7 @@ const initializeDb = async () => {
 
         const countTaskSummary = await checkTableContents(conn, 'task_summaries');
 
-        if(countEvalRuns === 0 || countTaskMetrics === 0 || countTaskConfig === 0 || countTaskSummary === 0
+        if(countEvalRuns !== 0 || countTaskMetrics === 0 || countTaskConfig === 0 || countTaskSummary === 0
             || countTaskAggregated === 0 || countEvaluationResults === 0 || countGeneralSummary === 0){
             await loadJsonFiles();
         }
@@ -561,19 +561,24 @@ async function loadJsonFiles() {
         await conn.query("LOAD json;");
         await conn.query("SET autoinstall_known_extensions=1;");
 
+        // Récupérer le port depuis l'URL actuelle
+        const currentUrl = new URL(window.location.href);
+        const PORT = currentUrl.port || '80'; // Port par défaut si non spécifié
+        const baseUrl = `${currentUrl.protocol}//${currentUrl.hostname}${PORT ? ':' + PORT : ''}`;
+
         // Création des tables temporaires avec une structure plus plate
         await conn.query(`
             CREATE OR REPLACE TABLE temp_json_data AS
-            SELECT * FROM read_json_auto('http://localhost:10000/results1.json');
+            SELECT * FROM read_json_auto('${baseUrl}/results1.json');
         `);
 
         await conn.query(`
             CREATE OR REPLACE TABLE temp_json_data2 AS
-            SELECT * FROM read_json_auto('http://localhost:10000/results2.json');
+            SELECT * FROM read_json_auto('${baseUrl}/results2.json');
         `);
 
-        const filePath = 'http://localhost:10000/results1.json';
-        const filePath2 = 'http://localhost:10000/results2.json';
+        const filePath = `${baseUrl}/results1.json`;
+        const filePath2 = `${baseUrl}/results2.json`;
 
         const response = await fetch(filePath);  // Attendre la réponse
         const data = await response.json();      // Attendre la conversion en JSON
@@ -1553,6 +1558,8 @@ readBtn.addEventListener('click', function () {
     this.classList.add('tmp');
 });
 
+const jsonImportSection = document.getElementById('json-import-section');
+
 let insertBTN = document.querySelector('#insert-btn');
 
 insertBTN.addEventListener("click", function(){
@@ -1562,6 +1569,8 @@ insertBTN.addEventListener("click", function(){
     createButton.forEach(btn => {
         btn.classList.remove('tmp');
     });
+
+    jsonImportSection.style.display = "none";
 
     // Ajouter la classe active au bouton Create
     this.classList.add('tmp');
@@ -1576,6 +1585,9 @@ readSpecificDataBtn.addEventListener("click", function(){
     createButton.forEach(btn => {
         btn.classList.remove('tmp');
     });
+
+    sqlResultCrud.getWrapperElement().style.display = "none";
+    clearBtnCrud.style.display = "none";
 
     // Ajouter la classe active au bouton Create
     this.classList.add('tmp');
@@ -2071,6 +2083,8 @@ async function insertDataGeneralSummary() {
     }
 }
 
+const columnsContainer = document.getElementById("columns-container");
+
 document.querySelector("#read-all-data-btn").addEventListener("click", function() {
     // Créer un map des IDs de boutons et leurs noms de table correspondants
     const buttonTableMap = {
@@ -2082,6 +2096,10 @@ document.querySelector("#read-all-data-btn").addEventListener("click", function(
         'task-summaries-btn': 'task_summaries',
         'general-summary-btn': 'general_summary'
     };
+
+    columnsContainer.style.display ="none";
+    runQueryBtnCRUD.style.display ="none";
+
 
     // Trouver le bouton actif
     const activeButton = document.querySelector('.read-simple-display-btn.active');

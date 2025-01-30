@@ -505,26 +505,34 @@ body {
     padding: 15px;
     border-radius: 10px;
     width: fit-content;
+    align-items: center;
+    justify-content: center;
 }
 
-#form-container h3 {
-    margin-bottom: 10px;
-    font-size: 16px;
-    color: #333;
-}
-
-#data-form label {
-    display: block;
-    margin-top: 10px;
-    font-size: 14px;
+#form-container {
+    display: flex;
+    justify-content: center; /* Centrer horizontalement */
+    align-items: center; /* Centrer verticalement */
 }
 
 #data-form input {
+    font-size: 14px;
+    width: 70%;
+    border-radius: 30px;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    padding: 8px 16px;    /* Pour un meilleur espacement intérieur */
+    outline: none;
+}
+
+#data-form .my-input-name {
     width: 100%;
     padding: 8px;
-    margin-top: 5px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #ccc;
+    border-radius: 30px;
+    text-align: center;
+    align-items: center;
 }
 
 #data-form button {
@@ -535,6 +543,14 @@ body {
     border-radius: 5px;
     cursor: pointer;
 }
+
+#data-form h4,#data-form h3 {
+    font-size: 19px;
+    font-weight: bold;
+    color: #fff;
+}
+
+
 
 .table-item {
     display: flex;
@@ -586,12 +602,6 @@ body {
     width: fit-content;
 }
 
-h3, h4 {
-    margin-bottom: 15px;
-    font-size: 16px;
-    color: #333;
-}
-
 .form-grid {
     display: flex;
     gap: 50px;
@@ -618,17 +628,6 @@ h3, h4 {
 .form-column div {
     padding: 8px 0;
     font-size: 14px;
-    margin-bottom: 15px;
-
-}
-
-
-input {
-    width: 200px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 11px;
 }
 
 button {
@@ -654,7 +653,7 @@ button {
 }
 
 #columns-container h3 {
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     font-size: 18px;
     color: #ffffff;
 }
@@ -666,14 +665,45 @@ button {
 }
 
 .column-item input[type="checkbox"] {
-    margin-right: 10px;
+    margin-right: 30px;
+    margin-bottom: 20px;
     cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* Forme ronde */
+    background-color: white; /* Fond initial */
+    border: 2px solid black; /* Bordure noire */
+    appearance: none; /* Retirer l'apparence par défaut */
+    position: relative;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+.column-item input[type="checkbox"]:checked {
+    background-color: #FFF100; /* Fond jaune lorsque la case est cochée */
+    border-color: black; /* Bordure noire */
+}
+
+.column-item input[type="checkbox"]:checked::before {
+    content: "✓";  /* Utilisation du symbole de coche */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    color: black;
+    font-weight: bold;
+}
+
 
 .column-item label {
     font-size: 14px;
     color: #ffffff;
     cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.columns-list{
+    margin-top: 20px;
 }
 
 #json-import-section {
@@ -694,7 +724,21 @@ button {
     font-size: 14px;
 }
 
+.column-item label{
+    font-size: 14px;
+    width: 30%;
+    border-radius: 30px;
+    background-color: black;
+    color: white;
+    border: 2px solid white;
+    padding: 8px 16px;    /* Pour un meilleur espacement intérieur */
+    outline: none;
+    text-align: center;
+}
 
+.column-item input{
+
+}
 
 
 

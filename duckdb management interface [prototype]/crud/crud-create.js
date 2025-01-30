@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //C  R  E  A  T  E  :  INSERT DATA INTO EXISTING TABLE  --------------------------------------------------
 
     const insertBtn = document.getElementById("insert-btn");
+    const importJsonBtn = document.getElementById("import-json-file-btn");
     const tableList = document.getElementById("table-list");
     const formContainer = document.getElementById("form-container");
     const selectedTableName = document.getElementById("selected-table-name");
@@ -54,6 +55,15 @@ document.addEventListener("DOMContentLoaded", function () {
     insertBtn.addEventListener("click", function () {
         tableList.style.display = "block";
         insertDataStep.style.display = "flex"; // Affiche l'étape
+        tableList.style.display = "block"; // Affiche la liste des tables
+        runQuery.style.display = "block";
+        jsonImportSection.style.display = "none;"
+        importJsonFileStep.style.display = "none";
+    });
+
+    importJsonBtn.addEventListener("click", function () {
+        tableList.style.display = "block";
+        insertDataStep.style.display = "block"; // Affiche l'étape
         tableList.style.display = "block"; // Affiche la liste des tables
         runQuery.style.display = "block";
     });
@@ -77,8 +87,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Événement pour afficher/masquer la section JSON
     importJsonFileBtn.addEventListener('click', () => {
-        jsonImportSection.style.display = jsonImportSection.style.display === 'none' ? 'block' : 'none';
+        jsonImportSection.style.display = 'block';
         importJsonFileStep.style.display = "flex";
+
+        tableList.style.display = "none";
+        insertDataStep.style.display = "none"; // Affiche l'étape
+        tableList.style.display = "none"; // Affiche la liste des tables
+        runQuery.style.display = "none";
+
+        const createButtons = document.querySelectorAll('.create-btn');
+
+        createButtons.forEach(btn => {
+            btn.classList.remove('tmp');
+            btn.classList.remove('selected');
+        });
+
+        importJsonFileBtn.classList.add("selected");
     });
 
     //evenement quand on clique sur la creoix de l'étape
@@ -165,7 +189,33 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Affichage de la liste des tables et étape "Insert Data"
     insertBtn.addEventListener("click", function () {
+
+        const createButtons = document.querySelectorAll('.create-btn');
+
+        createButtons.forEach(btn => {
+            btn.classList.remove('tmp');
+            btn.classList.remove('selected');
+        });
+
         tableList.style.display = "block";
+        importJsonFileStep.style.display = "none";
+
+        showStep('insert-data-step');
+        insertBtn.classList.add("selected");
+    });
+
+    insertBtn.addEventListener("click", function () {
+
+        const createButtons = document.querySelectorAll('.create-btn');
+
+        createButtons.forEach(btn => {
+            btn.classList.remove('tmp');
+            btn.classList.remove('selected');
+        });
+
+        tableList.style.display = "block";
+        importJsonFileStep.style.display = "none";
+
         showStep('insert-data-step');
         insertBtn.classList.add("selected");
     });
@@ -185,11 +235,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 tableColumns[tableName].forEach(column => {
                     let columnDiv = document.createElement("div");
                     columnDiv.textContent = column;
+                    columnDiv.classList.add("my-input-name");
                     columnContainer.appendChild(columnDiv);
 
                     let inputField = document.createElement("input");
                     inputField.setAttribute("type", "text");
                     inputField.setAttribute("name", column);
+
+                    inputField.classList.add("my-input-class");
+
                     inputField.setAttribute("placeholder", "Enter " + column);
                     inputContainer.appendChild(inputField);
                 });
@@ -225,6 +279,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    const columnsContainer = document.getElementById("columns-container");
+
     // Fonction pour masquer l'étape correspondante
     function hideStep(stepId) {
         const step = document.getElementById(stepId);
@@ -256,6 +312,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     btn.classList.remove('tmp');
                     btn.classList.remove('selected');
                 });
+
+                const readTableButtons = document.querySelectorAll('.read-simple-display-btn');
+
+                readTableButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                });
+
+                columnsContainer.style.display = "none";
             }
 
         }
