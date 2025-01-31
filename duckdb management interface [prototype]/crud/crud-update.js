@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const taskMetricsStep = document.getElementById('update-task_metrics-table'); 
     //table task summaries
     const taskSummariesBtn = document.getElementById('update-task-summaries-btn');
-    const taskSummariesStep = document.getElementById('update-tasks_summaries-table'); 
+    const taskSummariesStep = document.getElementById('update-task_summaries-table');
     //table general summary
     const generalSummaryBtn = document.getElementById('update-general-summary-btn');
     const generalStep = document.getElementById('update-general_summary-table'); 
@@ -35,6 +35,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const validationContenant = document.querySelector('.validation-buttons');
 
+    // Sélectionner tous les boutons
+    const buttons = document.querySelectorAll('.update-simple-display-btn');
+
+// Ajouter un écouteur d'événement à chaque bouton
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Vérifier si l'élément existe
+            if (validationContenant) {
+                // Changer le display en flex
+                validationContenant.style.display = 'flex';
+            } else {
+                console.error("L'élément .validation-buttons n'a pas été trouvé");
+            }
+        });
+    });
 
 
     const tableMapping = {
@@ -49,12 +64,12 @@ document.addEventListener("DOMContentLoaded", function () {
     // Données des colonnes des tables (simulées)
     const tableColumns = {
         "Table \"evaluation_runs\"": [
-            "run_id", "model_name", "num_fewshot_seeds", "override_batch_size", 
+            "run_id", "model_name", "num_fewshot_seeds", "override_batch_size",
             "max_samples", "job_id", "start_time", "end_time", "total_evaluation_time", 
             "model_sha", "model_dtype", "model_size", "lighteval_sha"
         ],
         "Table \"task_configs\"": [
-            "task_id", "task_base_name", "prompt_function", "hf_repo", 
+            "task_id", "task_base_name", "prompt_function", "hf_repo",
             "hf_subset", "hf_revision", "hf_filter", "trust_dataset", 
             "few_shots_split", "few_shots_select", "generation_size", 
             "generation_grammar", "output_regex", "num_samples", 
@@ -62,24 +77,24 @@ document.addEventListener("DOMContentLoaded", function () {
             "must_remove_duplicate_docs", "version", "frozen"
         ],
         "Table \"task_metrics\"": [
-            "metric_id", "metric_name", "higher_is_better", "category", 
+            "metric_id", "metric_name", "higher_is_better", "category",
             "use_case", "sample_level_fn", "corpus_level_fn"
         ],
         "Table \"tasks_evaluation_results\"": [
-            "run_id", "task_id", "em", "em_stderr", "qem", 
+            "run_id", "task_id", "em", "em_stderr", "qem",
             "qem_stderr", "pem", "pem_stderr", "pqem", "pqem_stderr"
         ],
         "Table \"aggregated_evaluation_results\"": [
-            "run_id", "result_type", "em", "em_stderr", "qem", 
+            "run_id", "result_type", "em", "em_stderr", "qem",
             "qem_stderr", "pem", "pem_stderr", "pqem", "pqem_stderr"
         ],
         "Table \"tasks_summaries\"": [
-            "run_id", "task_id", "truncated", "non_truncated", 
+            "run_id", "task_id", "truncated", "non_truncated",
             "padded", "non_padded", "effective_few_shots", 
             "num_truncated_few_shots"
         ],
         "Table \"general_summary\"": [
-            "run_id", "truncated", "non_truncated", 
+            "run_id", "truncated", "non_truncated",
             "padded", "non_padded", "num_truncated_few_shots"
         ]
     };
@@ -134,6 +149,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 toggleSelectionBtn.textContent = "Tout sélectionner";
                 allSelected = false;
             }
+
+            // Clear and hide WHERE condition
+            const whereCondition = document.getElementById("where-condition");
+            const whereField = document.getElementById("where-field");
+            const whereValue = document.getElementById("where-value");
+
+            // Reset select and input
+            whereField.innerHTML = "";
+            whereValue.value = "";
+
+            // Hide the whole WHERE section
+            whereCondition.style.display = "none";
         });
     }
     
@@ -260,39 +287,59 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
+    document.getElementById("where-condition").style.display = "none";
+
     function displayFields(tableName) {
         const fieldsContainer = document.getElementById("fields-container");
+        const whereField = document.getElementById("where-field");
         fieldsContainer.innerHTML = "";
+        whereField.innerHTML = "";
 
         if (tableColumns[tableName]) {
+            document.getElementById("where-condition").style.display = "block";
             const fieldsList = document.createElement("ul");
 
             tableColumns[tableName].forEach(column => {
-                const listItem = document.createElement("li");
+                // Ajouter tous les champs dans le select WHERE
+                const option = document.createElement("option");
+                option.value = column;
+                option.textContent = column;
+                whereField.appendChild(option);
 
-                const checkbox = document.createElement("input");
-                checkbox.type = "checkbox";
-                checkbox.className = "field-checkbox";
-                checkbox.style.marginRight = "10px";
+                // Vérifier si c'est un champ ID
+                const isIdField = column.toLowerCase().includes('_id') || column.toLowerCase() === 'id';
 
-                const label = document.createElement("label");
-                label.textContent = column;
-                label.style.marginRight = "10px";
+                // Ne créer les inputs que pour les champs non-ID
+                if (!isIdField) {
+                    const listItem = document.createElement("li");
 
-                const input = document.createElement("input");
-                input.type = "text";
-                input.className = "field-input";
-                input.style.display = "none";
-                input.style.marginLeft = "10px";
+                    const checkbox = document.createElement("input");
+                    checkbox.type = "checkbox";
+                    checkbox.className = "field-checkbox";
+                    checkbox.style.marginRight = "10px";
+                    checkbox.dataset.field = column;
 
-                checkbox.addEventListener("change", function () {
-                    input.style.display = this.checked ? "inline-block" : "none";
-                });
+                    const label = document.createElement("label");
+                    label.textContent = column;
+                    label.style.marginRight = "10px";
 
-                listItem.appendChild(checkbox);
-                listItem.appendChild(label);
-                listItem.appendChild(input);
-                fieldsList.appendChild(listItem);
+                    const input = document.createElement("input");
+                    input.type = "text";
+                    input.className = "field-input";
+                    input.style.display = "none";
+                    input.style.marginLeft = "10px";
+                    input.placeholder = "Enter your value";
+                    input.dataset.field = column;
+
+                    checkbox.addEventListener("change", function () {
+                        input.style.display = this.checked ? "inline-block" : "none";
+                    });
+
+                    listItem.appendChild(checkbox);
+                    listItem.appendChild(label);
+                    listItem.appendChild(input);
+                    fieldsList.appendChild(listItem);
+                }
             });
 
             fieldsContainer.appendChild(fieldsList);
@@ -307,7 +354,7 @@ document.addEventListener("DOMContentLoaded", function () {
             checkbox.checked = allSelected;
             checkbox.dispatchEvent(new Event("change"));
         });
-        this.textContent = allSelected ? "Deselect all" : "Deselect all";
+        this.textContent = allSelected ? "Deselect all" : "Select all";
     });
 
     // Bouton pour valider et masquer tout sauf un message de récupération
@@ -346,6 +393,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function hideStep(stepId) {
         const step = document.getElementById(stepId);
         if (step) {
+            document.querySelector(".msg-info").style.display = 'none';
+
             step.style.display = "none";
         }
     }

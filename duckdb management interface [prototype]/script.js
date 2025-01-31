@@ -1443,6 +1443,7 @@ function showStep(stepId) {
 function hideStep(stepId) {
     const step = document.getElementById(stepId);
     if (step) {
+        msgInfo.style.display = 'none';
         step.style.display = 'none';
     }
 }
@@ -1520,6 +1521,8 @@ clearBtnCrud.addEventListener("click", function(){
 
     sqlResultCrud.getWrapperElement().style.display = "none";
     sqlResultCrud.setValue("");
+
+    document.querySelector(".update-choose-columns-contenant").style.display = "none";
 
 })
 
@@ -1663,7 +1666,6 @@ function executeCRUD(){
             }
         }
     }
-
 }
 
 const buttonTableMap = {
@@ -2171,12 +2173,14 @@ async function readSpecificDataFromTable(tableName) {
             clearBtnCrud.style.display = "block";
 
         } catch(error) {
+            clearBtnCrud.style.display = "block";
             // Gestion des erreurs
             msgInfo.style.color = "#af1111";
             msgInfo.style.display = "block";
             msgInfo.textContent = "Syntax error, please check your query!";
         }
     } else {
+        clearBtnCrud.style.display = "block";
         // Message si aucune colonne n'est sélectionnée
         msgInfo.style.color = "#af1111";
         msgInfo.style.display = "block";
@@ -2409,6 +2413,101 @@ async function insertDataFromJsonFile(jsonData) {
     } catch (error) {
         msgInfo.textContent = "Error loading data into DuckDB";
         msgInfo.style.color = "#af1111";
+    }
+}
+
+const buttons = document.querySelectorAll('.update-simple-display-btn');
+
+buttons.forEach(button => {
+    button.addEventListener('click', function() {
+
+        buttons.forEach(btn => btn.classList.remove('tmp'));
+
+        this.classList.add('tmp');
+    });
+});
+
+document.querySelector("#validate-btn").addEventListener("click", function(){
+    const buttonTableMap = {
+        'update-evaluation-results-btn': 'evaluation_results',
+        'update-evaluation-runs-btn': 'evaluation_runs',
+        'update-task-configs-btn': 'task_configs',
+        'update-task-metrics-btn': 'task_metrics',
+        'update-task-summaries-btn': 'task_summaries',
+        'update-general-summary-btn': 'general_summary'
+    };
+
+    for (const [btnId, tableName] of Object.entries(buttonTableMap)) {
+        if (document.getElementById(btnId).classList.contains('tmp')) {
+            console.log("coucou je suis la encore hehe");
+            updateTableData(tableName);
+            break;
+        }
+    }
+});
+
+async function updateTableData(tableName) {
+    const fieldsContainer = document.getElementById("fields-container");
+    const checkboxes = fieldsContainer.querySelectorAll('.field-checkbox');
+    const whereField = document.getElementById("where-field");
+    const whereValue = document.getElementById("where-value");
+
+    let updateFields = [];
+    let updateValues = [];
+
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            const label = checkbox.nextElementSibling.textContent;
+            const value = checkbox.nextElementSibling.nextElementSibling.value;
+
+            if (value) {
+                updateFields.push(label);
+                updateValues.push(value);
+            }
+        }
+    });
+
+    if (updateFields.length === 0) {
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#af1111";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Please select at least one field to update!";
+        }
+        return;
+    }
+
+    try {
+        const setClause = updateFields.map((field, index) =>
+            `${field} = '${updateValues[index]}'`
+        ).join(', ');
+
+        // Construire la clause WHERE si une valeur est spécifiée
+        let whereClause = '';
+        if (whereValue.value.trim() !== '') {
+            whereClause = ` WHERE ${whereField.value} = '${whereValue.value}'`;
+        }
+
+        const query = `UPDATE ${tableName} SET ${setClause}${whereClause};`;
+        console.log("Query:", query); // Pour débugger
+
+        await conn.query(query);
+
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#28a745";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Update successful!";
+        }
+
+
+    } catch(error) {
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#af1111";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Error during update: " + error.message;
+        }
     }
 }
 
