@@ -18,7 +18,7 @@ body {
 #execute-img {
     width: 32%;
     height: 22%; /* Maintient les proportions de l'image */
-    margin-right: 10%; /* Ajoute un espace entre l'image et les boutons */
+    /*margin-right: 10%;  Ajoute un espace entre l'image et les boutons */
     margin-left: 3%;
     margin-top: 1.7%;
 }
@@ -30,29 +30,6 @@ body {
 }
 
 /* Centrage de la div contenant les boutons */
-.button-contenant {
-    display: flex;
-    justify-content: center; /* Centre les boutons horizontalement */
-    align-items: center; /* Centre les boutons verticalement */
-    gap: 20px; /* Espace entre les boutons */
-    margin-top: 45px; /* Marge pour espacer du contenu au-dessus si nécessaire */
-    margin-bottom: 30px;
-}
-
-/* Style de base pour les boutons */
-.button-contenant button {
-    width: 260px;
-    height: 45px;
-    flex-shrink: 0;
-    border-radius: 30px;
-    background: #070707;
-    color: #fff;
-    font-size: large;
-    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
-    transition: all 0.3s ease; /* Transition pour un effet fluide */
-    cursor: pointer;
-
-}
 
 /* Style actif pour sqlButton */
 #sqlButton.active {
@@ -105,6 +82,38 @@ body {
     color: #fff;
 }
 
+.clear-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px; /* Optional: add some padding from the edges */
+    width: 180px;
+    height: 45px;
+    font-weight: bolder;
+    flex-shrink: 0;
+    border-radius: 30px;
+    background: #070707;
+    color: #fff;
+    font-size: large;
+    border: 1px solid transparent; /* Par défaut, pas de bordure visible */
+    transition: all 0.3s ease; /* Transition pour un effet fluide */
+    cursor: pointer;
+    border: 1px solid #ffffff;
+    color: #fff;
+    z-index: 30;
+    /* Keep other existing styles */
+}
+
+/* Ensure the parent TD has a relative positioning */
+td:last-child {
+    position: relative;
+}
+
+.msg-error{
+    color: #af1111;
+    padding: 5px;
+}
+
 .run-query-btn:hover {
     border: 1px solid var(--jauneDuckDB, #FFF100);
     background: #FFF100;
@@ -152,7 +161,7 @@ body {
     background-color: #1e1e1e; /* Fond sombre */
     color: #ffffff; /* Texte blanc */
     height: 200px; /* Hauteur fixe */
-    max-height: 200px; /* Limite la hauteur */
+    max-height: 400px; /* Limite la hauteur */
     overflow: auto; /* Défilement interne si débordement */
     resize: none; /* Empêche le redimensionnement manuel */
     font-size: 16px; /* Taille du texte */
@@ -206,7 +215,8 @@ body {
 
 /* Espacement spécifique entre l'image et les boutons */
 .img-buttons-contenant {
-    display: block; /* Mode normal par défaut */
+    display: flex; /* Mode normal par défaut */
+    flex-direction: row;
     margin-bottom: 20px; /* Ajoute un espace en bas de l'image */
 }
 
@@ -219,9 +229,8 @@ body {
 
 /* Conteneur pour les queries */
 .queries-contenant {
-
     margin-top: 20px; /* Ajoute un espace au-dessus des requêtes */
-    gap: 15px;
+    gap: 10px;
     display: none; /* Caché par défaut */
     opacity: 0; /* Invisible visuellement */
     transition: opacity 0.3s ease;
@@ -255,17 +264,21 @@ body {
 
 /* Cercle avec numéro */
 .query-circle {
-    width: 40px; /* Largeur du cercle */
-    height: 40px; /* Hauteur du cercle */
-    border-radius: 50%; /* Rend le conteneur circulaire */
-    color: #ACABAB; /* Texte blanc */
-    font-size: 16px; /* Taille du texte */
-    font-weight: bold; /* Texte en gras */
-    display: flex; /* Centrer le texte dans le cercle */
+    min-width: 35px; /* Largeur minimale fixe */
+    min-height: 35px; /* Hauteur minimale fixe */
+    width: 35px; /* Largeur fixe */
+    height: 35px; /* Hauteur fixe */
+    flex-shrink: 0; /* Empêche le cercle de se rétrécir */
+    border-radius: 50%;
+    background-color: #252525; /* Ajoute une couleur de fond pour mieux voir le cercle */
+    color: #ACABAB;
+    font-size: 14px;
+    font-weight: bold;
+    display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px; /* Espace entre le cercle et le texte */
-    transition: background-color 0.3s; /* Animation sur changement de couleur */
+    margin-right: 10px;
+    transition: background-color 0.3s;
 }
 
 /* Texte des requêtes */

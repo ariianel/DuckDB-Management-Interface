@@ -7,7 +7,37 @@
     <link rel="stylesheet" href="./main/main.css">
     <link rel="stylesheet" href="duckdb-management-interface.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./crud/crud.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/sql/sql.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/sql-hint.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/dracula.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material.min.css">
 
+    <!-- Stylesheet pour la mise en forme de la page -->
+    <link rel="stylesheet" href="main/main.css">
+    <link rel="stylesheet" href="./crud/crud.css">
+    <link rel="stylesheet" href="./homepage/homepage.css">
+
+    <!-- CodeMirror: Bibliothèque pour l'éditeur de code SQL -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.js"></script>
+
+    <!-- Mode SQL pour CodeMirror -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/mode/sql/sql.min.js"></script>
+
+    <!-- Extension pour la fermeture automatique des parenthèses/brackets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/edit/closebrackets.min.js"></script>
+
+    <!-- Suggestions automatiques pour les requêtes SQL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/sql-hint.min.js"></script>
+
+    <!-- Thèmes pour l'éditeur CodeMirror -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/tomorrow-night-bright.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css">
+    <script src="path/to/codemirror/addon/display/placeholder.js"></script>
 
     <title>duckdb management</title>
     
@@ -28,7 +58,7 @@
                     <button id="navigateButton">Discover the tables ⭢</button>
                 </div>
                 <div class="query-img-contenant">
-                    <img src="./assets/requête_illustration.png" alt="">
+                    <img src="./assets/requête_illustration.png" alt="">
                 </div>
             </div>   
             <div class="bottom-contenant">
@@ -40,11 +70,501 @@
 
     </div>
 
-    <iframe src="./main/main.html" width="100%" height="1000px" style="border:none;"></iframe>
-    <iframe src="./crud/crud.html" width="100%" height="1000px" style="border:none;"></iframe>
+    <div class="main-contenant">
+        <!-- Conteneur principal pour l'affichage de la console SQL et des requêtes -->
+        <div class="all-contenant">
+            <!-- Section contenant le bouton d'exécution et les onglets de sélection -->
+            <div class="img-buttons-contenant">
+                <img id="execute-img" src="../assets/execute_and_display.png" alt="Execute and Display">
+
+                <!-- Boutons pour basculer entre la console SQL et les requêtes prédéfinies -->
+                <div class="button-contenant">
+                    <button id="sqlButton" class="active">SQLConsole</button>
+                    <button id="queryButton">Frequently used query</button>
+                </div>
+            </div>
+
+            <!-- Liste des requêtes fréquemment utilisées -->
+            <div class="queries-contenant">
+                <div class="query-item query-stat" data-selected="false">
+                    <div class="query-circle">1</div>
+                    <span class="query-name">Statistical analysis of result reliability</span>
+                </div>
+                <div class="query-item query-areas" data-selected="false">
+                    <div class="query-circle">2</div>
+                    <span class="query-name">Identify the areas where the model performs best</span>
+                </div>
+                <div class="query-item query-average" data-selected="false">
+                    <div class="query-circle">3</div>
+                    <span class="query-name">Compare the average performance of the models</span>
+                </div>
+                <div class="query-item query-trends" data-selected="false">
+                    <div class="query-circle">4</div>
+                    <span class="query-name">Analyze trends by category</span>
+                </div>
+                <div class="query-item query-time" data-selected="false">
+                    <div class="query-circle">5</div>
+                    <span class="query-name">Comparison of model execution time in relation to their perf</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau contenant le champ pour entrer le code SQL et afficher les résultats -->
+        <table class="tableau">
+            <thead>
+            <tr>
+                <th>
+                    Code
+                    <img src="../assets/ico_info.png" alt="info" class="info-icon">
+                    <!-- Infobulle affichée lorsque l'utilisateur survole l'icône -->
+                    <div class="tooltip">Ce champ est pour entrer votre code SQL</div>
+                </th>
+                <th>Result</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <!-- Zone de texte pour écrire les requêtes SQL -->
+                <td>
+                    <textarea id="sqlEditor"></textarea>
+                </td>
+                <td>
+                    <p class="msg-error"></p>
+                    <!-- Bouton pour exécuter la requête SQL -->
+                    <button class="run-query-btn" id="run-query-console">▶ Run Query</button>
+                    <textarea id="sqlResult"></textarea>
+                    <button class="clear-btn" id="clear-btn-main">✖ Clear</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="contenant">
+
+        <div class="all-contenant">
+
+            <div class="img-buttons-contenant">
+                <img id="execute-img" src="../assets/crud-workspace.png" alt="Execute and Display Image">
+
+                <!--   C R U D    -------------------------------------------------------------------------------->
+                <div class="crud-contenant">
+                    <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                    <div class="crud-content">
+                        <h2 class="crud-title">Start by Choosing an Operation </h2>
+                        <div class="crud-buttons">
+                            <button class="crud-btn" id="create-btn">Create</button>
+                            <button class="crud-btn" id="read-btn">Read</button>
+                            <button class="crud-btn" id="update-btn">Update</button>
+                            <button class="crud-btn" id="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- CREATE SECTION --------------------------------------------------------------------------->
+            <div class="create-contenant">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="create-content">
+                    <h2 class="create-title">What would you like to create ? </h2>
+                    <div class="create-buttons">
+                        <button class="create-btn" id="insert-btn">Insert data into Existing Table</button>
+                        <button class="create-btn" id="import-json-file-btn">Import a JSON file</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section after Create and Insert Data into existing Table you Complete the Form -->
+            <div class="create-contenant">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="create-content">
+                    <h2 class="create-title">Complete the form below to add your data </h2>
+                </div>
+            </div>
+
+            <!-- READ SECTION ------------------------------------------------------------------------------------>
+            <div id="read">
+
+            </div>
+            <div class="read-contenant" style="display: none;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="read-content">
+                    <h2 class="read-title">Select how you want to read the data ? </h2>
+                    <div class="read-buttons">
+                        <button class="read-btn" id="read-insert-btn">Simple details</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- READ SECTION >> simple display -->
+            <div class="read-simple-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="read-simple-display-content">
+                    <h2 class="read-simple-display-title" style="font-size: 17px;">Select the table you'd like to display ? </h2>
+                    <div class="<read-simple-display-buttons>">
+                        <button class="read-simple-display-btn" id="evaluation-results-btn">evaluation_results</button>
+                        <button class="read-simple-display-btn" id="evaluation-runs-btn">evaluation_runs</button>
+                        <button class="read-simple-display-btn" id="task-configs-btn">task_configs</button>
+                        <button class="read-simple-display-btn" id="task-metrics-btn">task_metrics</button>
+                        <button class="read-simple-display-btn" id="task-summaries-btn">tasks_summaries</button>
+                        <button class="read-simple-display-btn" id="general-summary-btn">general_summary</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- READ SECTION >> simple display >> how to display data -->
+            <div class="read-how-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="read-how-display-content">
+                    <h2 class="read-how-display-title" style="font-size: 17px;">Now choose how to display the data from the table </h2>
+                    <div class="read-how-display-buttons">
+                        <button class="read-how-display-btn" id="read-all-data-btn">Read all data</button>
+                        <button class="read-how-display-btn" id="specific-columns-btn">Read Specific columns</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- READ SECTION >> simple display >> how to display data >> read all data -->
+            <div class="read-all-data-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="read-read-all-data-display-content">
+                    <h2 class="read-read-all-data-display-title" style="font-size: 17px;">Query execution underway, almost there... </h2>
+                </div>
+            </div>
+
+            <!-- UPDATE SECTION ---------------------------------------------------------------------->
+            <div class="update-contenant" style="display: none;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="update-content">
+                    <h2 class="update-title">How would you like to update the data ? </h2>
+                    <div class="update-buttons">
+                        <button class="update-btn" id="specific-columns-in-row-btn">Specific Columns in row</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- UPDATE SECTION >> select the table to update ------------------------------------------------------------------------------------>
+            <!-- <div id="read"> -->
+
+            <div class="update-simple-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="update-simple-display-content">
+                    <h2 class="update-simple-display-title" style="font-size: 17px;">Select the table you'd like to update ? </h2>
+                    <div class="update-simple-display-buttons">
+                        <button class="update-simple-display-btn" id="update-evaluation-results-btn">evaluation_results</button>
+                        <button class="update-simple-display-btn" id="update-evaluation-runs-btn">evaluation_runs</button>
+                        <button class="update-simple-display-btn" id="update-task-configs-btn">task_configs</button>
+                        <button class="update-simple-display-btn" id="update-task-metrics-btn">task_metrics</button>
+                        <button class="update-simple-display-btn" id="update-task-summaries-btn">tasks_summaries</button>
+                        <button class="update-simple-display-btn" id="update-general-summary-btn">general_summary</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="update-choose-columns-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="update-choose-columns-contenant">
+                    <h2 class="update-choose-columns-contenant-title" style="font-size: 17px;">Select the column(s) you want to update from the table </h2>
+                </div>
+            </div>
+
+            
+
+            <!-- DELETE SECTION --------------------------------------------------------------->
+            <div class="delete-contenant" style="display: none;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="delete-content">
+                    <h2 class="delete-title">How would you like to delete the data ? </h2>
+                    <div class="delete-buttons">
+                        <button class="delete-btn" id="specific-rows-btn">Specific Rows</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DELETE >> select the table to delete -->
+            <div class="delete-simple-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="delete-simple-display-content">
+                    <h2 class="delete-simple-display-title" style="font-size: 17px;">Select the table you'd like to update ? </h2>
+                    <div class="delete-simple-display-buttons">
+                        <button class="delete-simple-display-btn" id="delete-evaluation-results-btn">evaluation_results</button>
+                        <button class="delete-simple-display-btn" id="delete-evaluation-runs-btn">evaluation_runs</button>
+                        <button class="delete-simple-display-btn" id="delete-task-configs-btn">task_configs</button>
+                        <button class="delete-simple-display-btn" id="delete-task-metrics-btn">task_metrics</button>
+                        <button class="delete-simple-display-btn" id="delete-task-summaries-btn">tasks_summaries</button>
+                        <button class="delete-simple-display-btn" id="delete-general-summary-btn">general_summary</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="delete-choose-columns-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="delete-choose-columns-contenant">
+                    <h2 class="delete-choose-columns-contenant-title" style="font-size: 17px;">Select the column(s) to define which rows to delete </h2>
+                </div>
+            </div>
+
+
+        </div>
+
+
+        <table class="tableau">
+            <thead>
+            <tr>
+                <th id="query">Query
+
+                    <!-- CRUD STEPS MANAGEMENT ------------------------------------------------------------------------------------->
+
+                    <!-- CREATE -------->
+                    <div class="steps crud-step" id="create-step" style="display: none;">
+                        <p>Create</p>
+                        <img src="../assets/cross.png" alt="cross img" class="create-close-step" data-step="create-step">
+                    </div>
+
+                    <!-- CREATE >> insert data -->
+                    <div class="steps create-btn-step" id="insert-data-step" style="display: none;">
+                        <p>Insert data</p>
+                        <img src="../assets/cross.png" alt="cross img" class="insert-close-step" data-step="create-view-step">
+                    </div>
+
+                    <!-- CREATE >> import JSON file -->
+                    <div class="steps create-btn-step" id="import-json-file-step" style="display: none;">
+                        <p>JSON file</p>
+                        <img src="../assets/cross.png" alt="cross img" class="import-json-file-step" data-step="import-json-file-step">
+                    </div>
+
+                    <!-- READ STEP --------->
+                    <div class="steps crud-step" id="read-step" style="display: none;">
+                        <p>Read</p>
+                        <img src="../assets/cross.png" alt="cross img" class="read-close-step" data-step="read-step">
+                    </div>
+
+                    <!-- READ STEP >> Simple display --------->
+                    <div class="steps read-btn-step" id="read-simple-display-step" style="display: none;">
+                        <p>Simple display</p>
+                        <img src="../assets/cross.png" alt="cross img" class="read-simple-display-close-step" data-step="read-step">
+                    </div>
+
+                    <!-- UPDATE STEP -------->
+                    <div class="steps crud-step" id="update-step" style="display: none;">
+                        <p>Update</p>
+                        <img src="../assets/cross.png" alt="cross img" class="update-close-step" data-step="update-step">
+                    </div>
+
+                    <!-- UPDATE STEP >> choose table --------->
+                    <div class="steps" id="update-choose-table-step" style="display: none;">
+                        <p>Choose Table</p>
+                        <img src="../assets/cross.png" alt="cross img" class="update-choose-table-close-step" data-step="read-step">
+                    </div>
+
+                    <!-- DELETE STEP ------->
+                    <div class="steps crud-step" id="delete-step" style="display: none;">
+                        <p>Delete</p>
+                        <img src="../assets/cross.png" alt="cross img" class="delete-close-step" data-step="delete-step">
+                    </div>
+                    <!-- DELETE STEP >> choose table --------->
+                    <div class="steps" id="delete-choose-table-step" style="display: none;">
+                        <p>Specific Rows</p>
+                        <img src="../assets/cross.png" alt="cross img" class="delete-choose-table-close-step" data-step="delete-step">
+                    </div>
+
+
+
+                    <!-- icone d'informations -->
+                    <img src="../assets/ico_info.png" alt="info" class="info-icon">
+
+
+                </th>
+                <th>Result</th>
+            </thead>
+            <tbody>
+            <tr>
+                <td id="container-crud">
+                    <!-- CREATE  -->
+                    <ul id="table-list" style="display: none;">
+                        <li class="table-item " id="table-evaluation-runs">
+                            Table "evaluation_runs"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-task-metrics">
+                            Table "task_metrics"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-task-configs">
+                            Table "task_configs"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-general-summary">
+                            Table "general_summary"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-tasks-evaluation-results">
+                            Table "tasks_evaluation_results"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-tasks-summaries">
+                            Table "tasks_summaries"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                        <li class="table-item" id="table-aggregated-evaluation-results">
+                            Table "aggregated_evaluation_results"
+                            <img src="../assets/cross.png" alt="cross img" class="close-step2" data-step="table-step">
+                        </li>
+                    </ul>
+
+                    <!-- CREATE :  Section pour importer un fichier JSON -->
+                    <div id="json-import-section" style="display: none; margin-top: 20px;">
+                        <h3>Import JSON File</h3>
+                        <input type="file" id="json-file-input" accept=".json" />
+                        <button id="process-json-btn">Process JSON</button>
+                    </div>
+
+                    <!-- READ : créer un deuxième sinon le js de read prend le comportement de create sur ses composants -->
+                    <ul id="table-list2" style="display: none;">
+                        <li class="table-item2 " id="evaluation_results-table" style="display: none;">
+                            Table "evaluation_results"
+                        </li>
+                        <li class="table-item2 " id="evaluation_runs-table" style="display: none;">
+                            Table "evaluation_runs"
+                        </li>
+                        <li class="table-item2" id="task_metrics-table" style="display: none;">
+                            Table "task_metrics"
+                        </li>
+                        <li class="table-item2" id="task_configs-table" style="display: none;">
+                            Table "task_configs"
+                        </li>
+                        <li class="table-item2" id="general_summary-table" style="display: none;">
+                            Table "general_summary"
+                        </li>
+                        <li class="table-item2" id="tasks_evaluation_results-table" style="display: none;" >
+                            Table "tasks_evaluation_results"
+                        </li>
+                        <li class="table-item2" id="tasks_summaries-table" style="display: none;" >
+                            Table "tasks_summaries"
+                        </li>
+                        <li class="table-item2" id="aggregated_evaluation_results-table" style="display: none;">
+                            Table "aggregated_evaluation_results"
+                        </li>
+                    </ul>
+
+                    <!-- READ : Colonnes avec les attributs de la table associés -->
+                    <div id="columns-container" style="display: none; margin-top: 20px;">
+                        <h3>Columns</h3>
+                        <div id="columns-list">
+                            <!-- Les colonnes de la table sélectionnée seront ajoutées ici dynamiquement -->
+                        </div>
+                    </div>
+
+                    <div class="fields-container">
+                        <div id="fields-container"></div>
+                        <div id="where-condition" class="where-condition">
+                            <label class="where-label" for="where-field">WHERE condition :</label>
+                            <select id="where-field" class="where-select"></select>
+                            <input type="text" id="where-value" class="where-input" placeholder="Valeue">
+                        </div>
+                    </div>
+
+                    <div class="validation-buttons" style="display: none;">
+                        <button id="toggle-selection-btn">Select All</button>
+                        <button id="validate-btn">Execute</button>
+                    </div>
+
+                    <!-- CREATE : formulaire -->
+                    <div id="form-container" style="display: none;">
+                        <h3>Insert Data into <span id="selected-table-name"></span></h3>
+                        <form id="data-form">
+                            <div class="form-grid">
+                                <div class="form-column">
+                                    <h4>Column</h4>
+                                    <div id="table-columns">
+                                        <!-- Les colonnes de la table sélectionnée seront ajoutées ici -->
+                                    </div>
+                                </div>
+                                <div class="form-inputs">
+                                    <h4>Values</h4>
+                                    <div id="input-fields">
+                                        <!-- Les champs de saisie correspondants seront ajoutés ici -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <button type="submit">Submit</button> -->
+                        </form>
+                    </div>
+
+                    <!-- DELETE : créer une troisième table sinon le js de read prend le comportement de create sur ses composants -->
+                    <ul id="table-list3" style="display: none;">
+                        <li class="table-item3 " id="delete-evaluation_results-table" style="display: none;">
+                            Table "evaluation_results"
+                        </li>
+                        <li class="table-item3 " id="delete-evaluation_runs-table" style="display: none;">
+                            Table "evaluation_runs"
+                        </li>
+                        <li class="table-item3" id="delete-task_metrics-table" style="display: none;">
+                            Table "task_metrics"
+                        </li>
+                        <li class="table-item3" id="delete-task_configs-table" style="display: none;">
+                            Table "task_configs"
+                        </li>
+                        <li class="table-item3" id="delete-general_summary-table" style="display: none;">
+                            Table "general_summary"
+                        </li>
+                        <li class="table-item3" id="delete-tasks_evaluation_results-table" style="display: none;" >
+                            Table "tasks_evaluation_results"
+                        </li>
+                        <li class="table-item3" id="delete-tasks_summaries-table" style="display: none;" >
+                            Table "tasks_summaries"
+                        </li>
+                        <li class="table-item3" id="delete-aggregated_evaluation_results-table" style="display: none;">
+                            Table "aggregated_evaluation_results"
+                        </li>
+                    </ul>
+
+                    <!-- DELETE : Colonnes avec les attributs de la table associés -->
+                    <div id="delete-columns-container" style="display: none; margin-top: 20px;">
+                        <h3>Columns</h3>
+                        <div id="delete-columns-list">
+                            <!-- Les colonnes de la table sélectionnée seront ajoutées ici dynamiquement -->
+                        </div>
+                    </div>
+                     <!-- DELETE : WHERE inputs -->
+                    <div class="delete-fields-container">
+                        <div id="delete-fields-container"></div>
+                        <div id="delete-where-condition" class="delete-where-condition">
+                            <label class="delete-where-label" for="delete-where-field">WHERE condition :</label>
+                            <select id="delete-where-field" class="delete-where-select"></select>
+                            <input type="text" id="delete-where-value" class="delete-where-input" placeholder="Valeue">
+                        </div>
+                    </div>
+                     <!-- DELETE : Boutons de validations -->
+                    <div class="delete-validation-buttons" style="display: none;">
+                        <button id="delete-toggle-selection-btn">Select All</button>
+                        <button id="delete-validate-btn">Execute</button>
+                    </div>
+
+
+
+
+
+                </td>
+                <td>
+                    <p class="msg-info"></p>
+                    <div id="json-display-container" style="margin-top: 10px; overflow-y: auto; max-height: 300px;">
+                        <!-- Contenu du fichier JSON sera affiché ici -->
+                    </div>
+                    <textarea id="sqlResultCrud"></textarea>
+                    <button id="run-query-btn" id="run-query-crud" style="display: none;" >Add Entry</button>
+                    <button class="clear-btn" id="clear-btn-crud">✖ Clear</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
 
     <div class="database-schema">
-        <img src="./assets/database_schema.png" alt="">
+        <img class="img-table" src="./assets/database_schema.png" alt="">
     </div>
 
     <footer>
@@ -74,18 +594,27 @@
     
 
 </body>
-<script>
-    document.getElementById('navigateButton').addEventListener('click', function() {
-        // Sélection de l'iframe de la page main.html
-        const mainIframe = document.querySelector('iframe[src="./main/main.html"]');
 
-        if (mainIframe) {
-            // Défilement fluide jusqu'à l'iframe
-            mainIframe.scrollIntoView({ behavior: 'smooth' });
-        }
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const navigateButton = document.getElementById("navigateButton");
+    const databaseSchema = document.querySelector(".database-schema");
 
-    });
-</script>
+    if (navigateButton && databaseSchema) {
+        navigateButton.addEventListener("click", function () {
+            databaseSchema.scrollIntoView({ behavior: "smooth" });
+        });
+    } else {
+        console.error("Un des éléments est introuvable !");
+    }
+});</script>
+<script type="module" src="script.js"></script>
+<script src="main/main.js"></script>
+<script src="crud/crud-create.js"></script>
+<script src="crud/crud-read.js"></script>
+<script src="crud/crud-update.js"></script>
+<script src="crud/crud-delete.js"></script>
+
+<script type="module" src="../script.js"></script>
 
 
 

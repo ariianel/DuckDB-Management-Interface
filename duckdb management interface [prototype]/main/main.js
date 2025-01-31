@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     // ** Gestion des éléments "query-item" **
     const queryItems = document.querySelectorAll('.query-item');
@@ -19,35 +20,6 @@ document.addEventListener("DOMContentLoaded", function () {
             // Ajoute la classe active à l'élément cliqué
             item.classList.add("active");
         });
-    });
-
-    // ** Initialisation de l'éditeur CodeMirror pour le SQL **
-    const sqlEditor = CodeMirror.fromTextArea(document.getElementById("sqlEditor"), {
-        mode: "text/x-sql",           // Définit le mode pour le SQL
-        theme: "material",            // Thème de l'éditeur
-        lineNumbers: true,            // Affiche les numéros de ligne
-        autoCloseBrackets: true,      // Fermeture automatique des parenthèses
-        matchBrackets: true,          // Correspondance des parenthèses
-        extraKeys: {
-            "Ctrl-Space": "autocomplete" // Raccourci pour l'autocomplétion
-        }
-    });
-
-    // Fixer la taille de CodeMirror
-    sqlEditor.setSize("100%", "200px"); // Largeur et hauteur fixes
-
-    // ** Gestion de l'exécution de requêtes SQL **
-    document.querySelector(".run-query-btn").addEventListener("click", function (event) {
-        const button = event.target;
-
-        // Masquer le bouton après un clic
-        button.style.display = "none";
-
-        // Récupérer le contenu de l'éditeur SQL
-        const sqlQuery = sqlEditor.getValue();
-        console.log("Requête SQL :", sqlQuery);
-
-        // TODO : Ajouter ici le code pour exécuter la requête (par ex. appel API)
     });
 
     // ** Gestion des boutons SQL et Query **
@@ -74,7 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleActive(sqlButton, queryButton);
 
         // Affiche le conteneur et le logo en mode "block"
-        buttonContainer.style.display = 'block';
+        buttonContainer.style.display = 'flex';
         logo.style.display = 'block';
     });
 

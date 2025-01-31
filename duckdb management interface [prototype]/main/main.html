@@ -21,9 +21,11 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/addon/hint/sql-hint.min.js"></script>
 
         <!-- Thèmes pour l'éditeur CodeMirror -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/dracula.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/material.min.css">
-        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/theme/tomorrow-night-bright.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/material.min.css">
+        <script src="path/to/codemirror/addon/display/placeholder.js"></script>
+
+
         <title>DuckDB Management</title>
     </head>
     <body>
@@ -44,23 +46,23 @@
 
                 <!-- Liste des requêtes fréquemment utilisées -->
                 <div class="queries-contenant">
-                    <div class="query-item" data-selected="false">
+                    <div class="query-item query-stat" data-selected="false">
                         <div class="query-circle">1</div>
                         <span class="query-name">Statistical analysis of result reliability</span>
                     </div>
-                    <div class="query-item" data-selected="false">
+                    <div class="query-item query-areas" data-selected="false">
                         <div class="query-circle">2</div>
                         <span class="query-name">Identify the areas where the model performs best</span>
                     </div>
-                    <div class="query-item" data-selected="false">
+                    <div class="query-item query-average" data-selected="false">
                         <div class="query-circle">3</div>
                         <span class="query-name">Compare the average performance of the models</span>
                     </div>
-                    <div class="query-item" data-selected="false">
+                    <div class="query-item query-trends" data-selected="false">
                         <div class="query-circle">4</div>
                         <span class="query-name">Analyze trends by category</span>
                     </div>
-                    <div class="query-item" data-selected="false">
+                    <div class="query-item query-time" data-selected="false">
                         <div class="query-circle">5</div>
                         <span class="query-name">Comparison of model execution time in relation to their perf</span>
                     </div>
@@ -77,7 +79,7 @@
                             <!-- Infobulle affichée lorsque l'utilisateur survole l'icône -->
                             <div class="tooltip">Ce champ est pour entrer votre code SQL</div>
                         </th>
-                        <th>Résultat</th>
+                        <th>Result</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -87,17 +89,21 @@
                             <textarea id="sqlEditor"></textarea>
                         </td>
                         <td>
+                            <p class="msg-error"></p>
                             <!-- Bouton pour exécuter la requête SQL -->
-                            <button class="run-query-btn">▶ Run Query</button>
+                            <button class="run-query-btn" id="run-query-console">▶ Run Query</button>
+                            <textarea id="sqlResult"></textarea>
+                            <button class="clear-btn">✖ Clear</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
 
-        </div>  
-        
+        </div>
+
         <!-- Inclusion du fichier JavaScript pour gérer les interactions de la page -->
         <script src="main.js"></script>
+        <script type="module" src="../script.js"></script>
 
     </body>
 </html>
