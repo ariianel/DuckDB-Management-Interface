@@ -2,17 +2,19 @@ document.addEventListener("DOMContentLoaded", function () {
     // Sélectionner le bouton "update" et les conteneurs correspondants
     const crudContenant = document.querySelector('.crud-contenant');
     const updateContenant = document.querySelector('.update-contenant');
-    const updateBtn = document.getElementById('update-btn'); // Correction ici
-    const specificColumnsBtn = document.getElementById('specific-columns-in-row-btn');
+    const updateBtn = document.getElementById('update-btn');
     
-    // U P D A T E : choose table to update 
+    // R E A D : simple display
     const updateSimpleDisplayContenant = document.querySelector('.update-simple-display-contenant');
-    // U P D A T E : choose table to update >> 
+    const updateSimpleDisplayBtn = document.getElementById('specific-columns-in-row-btn'); // Correction ici
+    const readHowDisplayContenant = document.querySelector('.read-how-display-contenant');
+
+    // R E A D : simple display >> how to display data
     const tableList = document.getElementById('table-list2');
-    const updateChooseColumnsContenant = document.querySelector('.update-choose-columns-contenant');
-    //table evaluation results
-    const evaluationResultsBtn = document.getElementById('update-evaluation-results-btn');
-    const evaluationResultsStep = document.getElementById('update-evaluation_results-table');
+    const updateHowDisplayContenant = document.querySelector('.update-choose-columns-contenant');
+    //table evaluatoin results
+    const updateEvaluationResultsBtn = document.getElementById('update-evaluation-results-btn');
+    const updateEvaluationResultsStep = document.getElementById('evaluation_results-table');
     //table evaluation runs
     const evaluationRunsBtn = document.getElementById('update-evaluation-runs-btn');
     const evaluationRunsStep = document.getElementById('update-evaluation_runs-table');
@@ -29,6 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const generalSummaryBtn = document.getElementById('update-general-summary-btn');
     const generalStep = document.getElementById('update-general_summary-table'); 
 
+    const chooseColumnsSentence = document.querySelector('.update-choose-columns-contenant');
     
     // Données des colonnes des tables (simulées)
     const tableColumns = {
@@ -70,10 +73,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // U P D A T E >> simple display >> how to display data -----------------------------------------
     
-    specificColumnsBtn.addEventListener("click", function () {
+    updateSimpleDisplayBtn.addEventListener("click", function () {
         // Cacher le conteneur READ
         updateContenant.style.display = 'none';
-        // Afficher le conteneur READ >> simple display
+            
+        // Afficher le conteneur UPDATE
         updateSimpleDisplayContenant.style.display = 'flex';
 
         // Afficher et masquer les étapes correspondantes
@@ -84,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const closeUpdateChooseStepBtn = document.querySelector(".update-choose-table-close-step");
     if (closeUpdateChooseStepBtn) {
         closeUpdateChooseStepBtn.addEventListener("click", function () {
-            // Cacher la section choose table et afficher update
+            // Cacher la section simple display et réafficher read
             updateContenant.style.display = "flex";
             updateSimpleDisplayContenant.style.display = "none";
             // Masquer l'étape read
@@ -92,21 +96,19 @@ document.addEventListener("DOMContentLoaded", function () {
             //masquer la table selectionnés
             tableList.style.display = "none";
             //masquer le conteneur "how to display data ?"
-            updateChooseColumnsContenant.style.display = "none";
-            // masquer les colonnes de la table
-            //columnsContainer.style.display = "none";
+            updateHowDisplayContenant.style.display = "none";
 
         });
 
 
     }
 
-
+    // R E A D >> simple display >> how to display data -----------------------------------------
+    
     //gestion des tables ---
 
     //EVALUATION RESULTS
-    evaluationResultsBtn.addEventListener("click", function () {
-       
+    updateEvaluationResultsBtn.addEventListener("click", function () {
 
         // Afficher la liste des tables si elle est cachée
         if (tableList.style.display === "none") {
@@ -115,43 +117,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Cacher toutes les autres tables sauf celle sélectionnée
         document.querySelectorAll(".table-item2").forEach(item => {
-            if (item !== evaluationResultsStep) {
+            if (item !== updateEvaluationResultsStep) {
                 item.style.display = "none";
             }
         });
 
         // Afficher la table sélectionnée
-        evaluationResultsStep.style.display = 'flex';
-        updateChooseColumnsContenant.style.display = 'flex';
+        updateEvaluationResultsStep.style.display = 'flex';
+        // Afficher le conteneur READ >> simple display >> how to display data
+        updateHowDisplayContenant.style.display = 'flex';
         // Cacher le conteneur READ >> simple display
         updateSimpleDisplayContenant.style.display = 'none';
+        readHowDisplayContenant.style.display = 'none';
         buffer = "Table \"evaluation_results\"";
     });
 
-    //EVALUATION RUNS
-    evaluationRunsBtn.addEventListener("click", function () {
-
-        // Afficher la liste des tables si elle est cachée
-        if (tableList.style.display === "none") {
-            tableList.style.display = "block"; // Affiche la liste complète des tables
-        }
-
-        // Cacher toutes les autres tables sauf celle sélectionnée
-        document.querySelectorAll(".table-item2").forEach(item => {
-            if (item !== evaluationRunsStep) {
-                item.style.display = "none";
-            }
-        });
-
-        // Afficher la table sélectionnée
-        evaluationRunsStep .style.display = 'flex';
-        // Afficher le conteneur READ >> simple display >> how to display data
-        updateChooseColumnsContenant.style.display = 'flex';
-        // Cacher le conteneur READ >> simple display
-        updateSimpleDisplayContenant.style.display = 'none';
-
-        buffer = "Table \"evaluation_runs\"";
-    });
 
     //TASK CONFIGS
     taskConfigsBtn.addEventListener("click", function () {
@@ -170,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Afficher la table sélectionnée
         taskConfigsStep.style.display = 'flex';
         // Afficher le conteneur READ >> simple display >> how to display data
-        updateChooseColumnsContenant.style.display = 'flex';
+        updateHowDisplayContenant.style.display = 'flex';
         // Cacher le conteneur READ >> simple display
         updateSimpleDisplayContenant.style.display = 'none';
         buffer = "Table \"task_configs\"";
@@ -193,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Afficher la table sélectionnée
         taskMetricsStep.style.display = 'flex';
         // Afficher le conteneur READ >> simple display >> how to display data
-        updateChooseColumnsContenant.style.display = 'flex';
+        updateHowDisplayContenant.style.display = 'flex';
         // Cacher le conteneur READ >> simple display
         updateSimpleDisplayContenant.style.display = 'none';
         buffer = "Table \"task_metrics\"";
@@ -216,7 +196,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Afficher la table sélectionnée
         taskSummariesStep.style.display = 'flex';
         // Afficher le conteneur READ >> simple display >> how to display data
-        updateChooseColumnsContenant.style.display = 'flex';
+        updateHowDisplayContenant.style.display = 'flex';
         // Cacher le conteneur READ >> simple display
         updateSimpleDisplayContenant.style.display = 'none';
         buffer = "Table \"tasks_summaries\"";
@@ -240,12 +220,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Afficher la table sélectionnée
         generalStep.style.display = 'flex';
         // Afficher le conteneur READ >> simple display >> how to display data
-        updateChooseColumnsContenant.style.display = 'flex';
+        updateHowDisplayContenant.style.display = 'flex';
         // Cacher le conteneur READ >> simple display
         updateSimpleDisplayContenant.style.display = 'none';
         buffer = "Table \"general_summary\"";
 
-    }); 
+    });
 
     if (updateBtn && crudContenant && updateContenant) {
         // Événement au clic du bouton UPDATE
