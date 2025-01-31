@@ -19,6 +19,7 @@
     <!-- Stylesheet pour la mise en forme de la page -->
     <link rel="stylesheet" href="main/main.css">
     <link rel="stylesheet" href="./crud/crud.css">
+    <link rel="stylesheet" href="./homepage/homepage.css">
 
     <!-- CodeMirror: Bibliothèque pour l'éditeur de code SQL -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.14/codemirror.min.css">
@@ -57,7 +58,7 @@
                     <button id="navigateButton">Discover the tables ⭢</button>
                 </div>
                 <div class="query-img-contenant">
-                    <img src="./assets/requête_illustration.png" alt="">
+                    <img src="./assets/requête_illustration.png" alt="">
                 </div>
             </div>   
             <div class="bottom-contenant">
@@ -209,7 +210,7 @@
                 <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
                 <div class="read-simple-display-content">
                     <h2 class="read-simple-display-title" style="font-size: 17px;">Select the table you'd like to display ? </h2>
-                    <div class="read-simple-display-buttons">
+                    <div class="<read-simple-display-buttons>">
                         <button class="read-simple-display-btn" id="evaluation-results-btn">evaluation_results</button>
                         <button class="read-simple-display-btn" id="evaluation-runs-btn">evaluation_runs</button>
                         <button class="read-simple-display-btn" id="task-configs-btn">task_configs</button>
@@ -466,6 +467,13 @@
                         </form>
                     </div>
 
+                    <div id="fields-container"></div>
+
+                    <div class="validation-buttons">
+                        <button id="toggle-selection-btn">Tout sélectionner</button>
+                        <button id="validate-btn">Valider</button>
+                    </div>
+
 
 
                 </td>
@@ -512,18 +520,7 @@
     
 
 </body>
-<script>
-    document.getElementById('navigateButton').addEventListener('click', function() {
-        // Sélection de l'iframe de la page main.html
-        const mainIframe = document.querySelector('iframe[src="./main/main.html"]');
 
-        if (mainIframe) {
-            // Défilement fluide jusqu'à l'iframe
-            mainIframe.scrollIntoView({ behavior: 'smooth' });
-        }
-
-    });
-</script>
 
 <script type="module" src="script.js"></script>
 <script src="main/main.js"></script>

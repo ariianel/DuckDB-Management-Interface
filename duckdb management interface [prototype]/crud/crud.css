@@ -292,6 +292,19 @@ body {
     transition: all 0.3s ease; /* Animation fluide */
 }
 
+.update-simple-display-btn {
+    background: #070707;
+    color: #ffffff; /* Texte en blanc */
+    border: 2px solid #555555; /* Bordure similaire */
+    border-radius: 30px;
+    padding: 8px 16px; /* Espacement interne (ajusté pour correspondre à sqlButton) */
+    font-size: 14px; /* Taille de texte identique */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Indicateur de clic */
+    text-transform: uppercase; /* Texte en majuscules comme sqlButton */
+    transition: all 0.3s ease; /* Animation fluide */
+}
+
 .read-how-display-btn {
     background: #070707;
     color: #ffffff; /* Texte en blanc */
@@ -350,6 +363,12 @@ body {
     color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
 }
 
+.update-simple-display-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
+
 .read-how-display-btn:hover {
     background-color: #333333; /* Couleur de fond plus claire */
     border-color: #FFF100; /* Bordure jaune lors du survol */
@@ -380,6 +399,12 @@ body {
 }
 
 .read-simple-display-btn:active {
+    background-color: #555555; /* Couleur encore plus claire */
+    border-color: #ffffff; /* Bordure blanche temporairement */
+    color: #ffffff; /* Texte en blanc */
+}
+
+.update-simple-display-btn:active {
     background-color: #555555; /* Couleur encore plus claire */
     border-color: #ffffff; /* Bordure blanche temporairement */
     color: #ffffff; /* Texte en blanc */
@@ -421,6 +446,13 @@ body {
     border-color: #FFF100; /* Bordure jaune */
     color: #000000; /* Texte noir */
 }
+
+.update-simple-display-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
+
 
 .read-how-display-btn.active {
     background-color: #FFF100; /* Fond jaune */
