@@ -81,9 +81,10 @@ body {
     color: #fff; /* Texte en blanc */
     border: 1px solid #fff; /* Bordures blanches de 10px */
     overflow: hidden;
-
     width: 1271px;
     flex-shrink: 0;
+    height: max-content;
+    margin-bottom: 500px;
 
 }
 
@@ -670,6 +671,7 @@ button {
 }
 
 
+
 #columns-container {
     padding: 15px;
     margin-top: 20px;
@@ -716,6 +718,46 @@ button {
     white-space: pre-wrap;
     font-family: monospace;
     font-size: 14px;
+}
+
+
+#fields-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+#fields-container li {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+input[type="text"] {
+    margin-left: 10px;
+    display: none;
+}
+
+input.field-checkbox{
+    margin-right: 3px;
+    width: 5px;
+}
+
+
+#toggle-selection-btn{
+    font-size: small;
+    height: 2%;
+    width: max-content;
+
+}
+
+#validate-btn{
+    font-size: small;
+    height: 2%;
+    width: max-content;
+}
+
+.database-schema{
+    height: 1500px;
+    width: max-content;
 }
 
 
