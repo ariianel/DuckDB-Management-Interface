@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const evaluationRunsStep = document.getElementById('evaluation_runs-table');
     //table task configs
     const taskConfigsBtn = document.getElementById('update-task-configs-btn');
-    const taskConfigsStep = document.getElementById('update-task_configs-table');  
+    const taskConfigsStep = document.getElementById('task_configs-table');  
     //table task metrics
     const taskMetricsBtn = document.getElementById('update-task-metrics-btn');
     const taskMetricsStep = document.getElementById('task_metrics-table');
