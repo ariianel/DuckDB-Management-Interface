@@ -187,7 +187,7 @@ document.addEventListener("DOMContentLoaded", function () {
     //EVALUATION RUNS
     evaluationRunsBtn.addEventListener("click", function () {
         document.getElementById('table-list2').style.display = "block"; // Afficher le parent
-        updateEvaluationResultsStep.style.display = "flex";
+        evaluationRunsStep.style.display = "flex";
         // Afficher le conteneur READ >> simple display >> how to display data
         updateHowDisplayContenant.style.display = "flex";
         // Cacher le conteneur READ >> simple display

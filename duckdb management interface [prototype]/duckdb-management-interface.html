@@ -257,7 +257,7 @@
             </div>
 
             <!-- UPDATE SECTION >> select the table to update ------------------------------------------------------------------------------------>
-            <div id="read">
+            <!-- <div id="read"> -->
 
             <div class="update-simple-display-contenant" style="display: none; margin-left: 2%;">
                 <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
@@ -295,6 +295,29 @@
                         <button class="delete-btn" id="all-rows-btn-2">All rows</button>
                         <button class="delete-btn" id="custom-query-btn-3">Custom Query</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- DELETE >> select the table to delete -->
+            <div class="delete-simple-display-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="delete-simple-display-content">
+                    <h2 class="delete-simple-display-title" style="font-size: 17px;">Select the table you'd like to update ? </h2>
+                    <div class="delete-simple-display-buttons">
+                        <button class="delete-simple-display-btn" id="delete-evaluation-results-btn">evaluation_results</button>
+                        <button class="delete-simple-display-btn" id="delete-evaluation-runs-btn">evaluation_runs</button>
+                        <button class="delete-simple-display-btn" id="delete-task-configs-btn">task_configs</button>
+                        <button class="delete-simple-display-btn" id="delete-task-metrics-btn">task_metrics</button>
+                        <button class="delete-simple-display-btn" id="delete-task-summaries-btn">tasks_summaries</button>
+                        <button class="delete-simple-display-btn" id="delete-general-summary-btn">general_summary</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="delete-choose-columns-contenant" style="display: none; margin-left: 2%;">
+                <img src="../assets/arrow.png" alt="Arrow" class="crud-image">
+                <div class="delete-choose-columns-contenant">
+                    <h2 class="delete-choose-columns-contenant-title" style="font-size: 17px;">Select the column(s) to define which rows to delete </h2>
                 </div>
             </div>
 
@@ -356,6 +379,13 @@
                         <p>Delete</p>
                         <img src="../assets/cross.png" alt="cross img" class="delete-close-step" data-step="delete-step">
                     </div>
+                    <!-- DELETE STEP >> choose table --------->
+                    <div class="steps" id="delete-choose-table-step" style="display: none;">
+                        <p>Specific Rows</p>
+                        <img src="../assets/cross.png" alt="cross img" class="delete-choose-table-close-step" data-step="delete-step">
+                    </div>
+
+
 
                     <!-- icone d'informations -->
                     <img src="../assets/ico_info.png" alt="info" class="info-icon">
@@ -442,6 +472,20 @@
                         </div>
                     </div>
 
+                    <div class="fields-container">
+                        <div id="fields-container"></div>
+                        <div id="where-condition" class="where-condition">
+                            <label class="where-label" for="where-field">WHERE condition :</label>
+                            <select id="where-field" class="where-select"></select>
+                            <input type="text" id="where-value" class="where-input" placeholder="Valeue">
+                        </div>
+                    </div>
+
+                    <div class="validation-buttons" style="display: none;">
+                        <button id="toggle-selection-btn">Select All</button>
+                        <button id="validate-btn">Execute</button>
+                    </div>
+
                     <!-- CREATE : formulaire -->
                     <div id="form-container" style="display: none;">
                         <h3>Insert Data into <span id="selected-table-name"></span></h3>
@@ -464,19 +508,57 @@
                         </form>
                     </div>
 
-                    <div class="fields-container">
-                        <div id="fields-container"></div>
-                        <div id="where-condition" class="where-condition">
-                            <label class="where-label" for="where-field">WHERE condition :</label>
-                            <select id="where-field" class="where-select"></select>
-                            <input type="text" id="where-value" class="where-input" placeholder="Valeue">
+                    <!-- DELETE : créer un deuxième sinon le js de read prend le comportement de create sur ses composants -->
+                    <ul id="table-list3" style="display: none;">
+                        <li class="table-item3 " id="delete-evaluation_results-table" style="display: none;">
+                            Table "evaluation_results"
+                        </li>
+                        <li class="table-item3 " id="delete-evaluation_runs-table" style="display: none;">
+                            Table "evaluation_runs"
+                        </li>
+                        <li class="table-item3" id="delete-task_metrics-table" style="display: none;">
+                            Table "task_metrics"
+                        </li>
+                        <li class="table-item3" id="delete-task_configs-table" style="display: none;">
+                            Table "task_configs"
+                        </li>
+                        <li class="table-item3" id="delete-general_summary-table" style="display: none;">
+                            Table "general_summary"
+                        </li>
+                        <li class="table-item3" id="delete-tasks_evaluation_results-table" style="display: none;" >
+                            Table "tasks_evaluation_results"
+                        </li>
+                        <li class="table-item3" id="delete-tasks_summaries-table" style="display: none;" >
+                            Table "tasks_summaries"
+                        </li>
+                        <li class="table-item3" id="delete-aggregated_evaluation_results-table" style="display: none;">
+                            Table "aggregated_evaluation_results"
+                        </li>
+                    </ul>
+
+                    <!-- DELETE : Colonnes avec les attributs de la table associés -->
+                    <div id="delete-columns-container" style="display: none; margin-top: 20px;">
+                        <h3>Columns</h3>
+                        <div id="delete-columns-list">
+                            <!-- Les colonnes de la table sélectionnée seront ajoutées ici dynamiquement -->
                         </div>
                     </div>
 
-                    <div class="validation-buttons" style="display: none;">
-                        <button id="toggle-selection-btn">Select All</button>
-                        <button id="validate-btn">Execute</button>
+                    <div class="delete-fields-container">
+                        <div id="delete-fields-container"></div>
+                        <div id="delete-where-condition" class="delete-where-condition">
+                            <label class="delete-where-label" for="delete-where-field">WHERE condition :</label>
+                            <select id="delete-where-field" class="delete-where-select"></select>
+                            <input type="text" id="delete-where-value" class="delete-where-input" placeholder="Valeue">
+                        </div>
                     </div>
+
+                    <div class="delete-validation-buttons" style="display: none;">
+                        <button id="delete-toggle-selection-btn">Select All</button>
+                        <button id="delete-validate-btn">Execute</button>
+                    </div>
+
+
 
 
 

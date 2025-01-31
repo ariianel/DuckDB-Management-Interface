@@ -365,6 +365,11 @@ body {
     color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
 }
 
+.delete-simple-display-btn:hover {
+    background-color: #333333; /* Couleur de fond plus claire */
+    border-color: #FFF100; /* Bordure jaune lors du survol */
+    color: #FFF100; /* Texte jaune pour correspondre au style SQLButton */
+}
 .read-how-display-btn:hover {
     background-color: #333333; /* Couleur de fond plus claire */
     border-color: #FFF100; /* Bordure jaune lors du survol */
@@ -449,7 +454,11 @@ body {
     color: #000000; /* Texte noir */
 }
 
-
+.delete-simple-display-btn.active {
+    background-color: #FFF100; /* Fond jaune */
+    border-color: #FFF100; /* Bordure jaune */
+    color: #000000; /* Texte noir */
+}
 .read-how-display-btn.active {
     background-color: #FFF100; /* Fond jaune */
     border-color: #FFF100; /* Bordure jaune */
@@ -925,6 +934,7 @@ ul, ol {
     margin: 0;
     align-items: center;
 }
+
 
 #toggle-selection-btn, #validate-btn{
     width: 500px;
