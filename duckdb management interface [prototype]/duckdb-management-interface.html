@@ -466,9 +466,9 @@
 
                     <div id="fields-container"></div>
 
-                    <div class="validation-buttons">
-                        <button id="toggle-selection-btn">Tout sélectionner</button>
-                        <button id="validate-btn">Valider</button>
+                    <div class="validation-buttons" style="display: none;">
+                        <button id="toggle-selection-btn">Select All</button>
+                        <button id="validate-btn">Execute</button>
                     </div>
 
 
@@ -521,7 +521,18 @@
 
 </body>
 
+<script>document.addEventListener("DOMContentLoaded", function () {
+    const navigateButton = document.getElementById("navigateButton");
+    const databaseSchema = document.querySelector(".database-schema");
 
+    if (navigateButton && databaseSchema) {
+        navigateButton.addEventListener("click", function () {
+            databaseSchema.scrollIntoView({ behavior: "smooth" });
+        });
+    } else {
+        console.error("Un des éléments est introuvable !");
+    }
+});</script>
 <script type="module" src="script.js"></script>
 <script src="main/main.js"></script>
 <script src="crud/crud-create.js"></script>
