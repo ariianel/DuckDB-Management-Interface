@@ -17,19 +17,19 @@ document.addEventListener("DOMContentLoaded", function () {
     const updateEvaluationResultsStep = document.getElementById('evaluation_results-table');
     //table evaluation runs
     const evaluationRunsBtn = document.getElementById('update-evaluation-runs-btn');
-    const evaluationRunsStep = document.getElementById('update-evaluation_runs-table');
+    const evaluationRunsStep = document.getElementById('evaluation_runs-table');
     //table task configs
     const taskConfigsBtn = document.getElementById('update-task-configs-btn');
     const taskConfigsStep = document.getElementById('update-task_configs-table');  
     //table task metrics
     const taskMetricsBtn = document.getElementById('update-task-metrics-btn');
-    const taskMetricsStep = document.getElementById('update-task_metrics-table'); 
+    const taskMetricsStep = document.getElementById('task_metrics-table');
     //table task summaries
     const taskSummariesBtn = document.getElementById('update-task-summaries-btn');
-    const taskSummariesStep = document.getElementById('update-task_summaries-table');
+    const taskSummariesStep = document.getElementById('tasks_summaries-table');
     //table general summary
     const generalSummaryBtn = document.getElementById('update-general-summary-btn');
-    const generalStep = document.getElementById('update-general_summary-table'); 
+    const generalStep = document.getElementById('general_summary-table');
 
     const chooseColumnsSentence = document.querySelector('.update-choose-columns-contenant');
 
@@ -170,6 +170,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //EVALUATION RESULTS 
     updateEvaluationResultsBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
+
         document.getElementById('table-list2').style.display = "block"; // Afficher le parent
         updateEvaluationResultsStep.style.display = "flex";
         // Afficher le conteneur READ >> simple display >> how to display data
@@ -186,6 +191,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //EVALUATION RUNS
     evaluationRunsBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
+
         document.getElementById('table-list2').style.display = "block"; // Afficher le parent
         evaluationRunsStep.style.display = "flex";
         // Afficher le conteneur READ >> simple display >> how to display data
@@ -200,6 +210,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //TASK CONFIGS
     taskConfigsBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
+
         document.getElementById('table-list2').style.display = "block";
         // Afficher la table sélectionnée
         taskConfigsStep.style.display = 'flex';
@@ -214,6 +229,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
     //TASK METRICS
     taskMetricsBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
+
         document.getElementById('table-list2').style.display = "block";
         // Afficher la table sélectionnée
         taskMetricsStep.style.display = 'flex';
@@ -228,6 +248,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }); 
     //TASK SUMMARIES
     taskSummariesBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
 
         document.getElementById('table-list2').style.display = "block";
         // Afficher la table sélectionnée
@@ -244,6 +268,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     ////GENERAL SUMMARY
     generalSummaryBtn.addEventListener("click", function () {
+        const allTableItems = document.querySelectorAll('.table-item2');
+        allTableItems.forEach(item => {
+            item.style.display = "none";
+        });
 
         document.getElementById('table-list2').style.display = "block";
         // Afficher la table sélectionnée
