@@ -116,12 +116,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Gestion de la fermeture de l'étape "choose table"
-    const closeUpdateChooseStepBtn = document.querySelector(".update-choose-table-close-step");
+    const closeUpdateChooseStepBtn = document.querySelector(".delete-choose-table-close-step");
     if (closeUpdateChooseStepBtn) {
         closeUpdateChooseStepBtn.addEventListener("click", function () {
             // Cacher la section choose update et réafficher update
             deleteContenant.style.display = "flex";
             deleteSimpleDisplayContenant.style.display = "none";
+
+            document.getElementById("delete-where-condition").style.display = "none";
             
             // Masquer l'étape update
             hideStep('delete-choose-table-step');
@@ -129,6 +131,10 @@ document.addEventListener("DOMContentLoaded", function () {
             // Masquer la table sélectionnée
             tableList.style.display = "none";
             deleteHowDisplayContenant.style.display = "none";
+
+            document.querySelectorAll('.table-item3').forEach(element => {
+                element.style.display = "none";
+            });
             
             // Masquer les boutons select all et execute
             deleteValidationContenant.style.display = "none";
@@ -291,7 +297,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function displayFields(tableName) {
         const fieldsContainer = document.getElementById("delete-fields-container");
-        const whereField = document.getElementById("where-field");
+        const whereField = document.getElementById("delete-where-field");
         fieldsContainer.innerHTML = "";
         whereField.innerHTML = "";
 
@@ -306,40 +312,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 option.textContent = column;
                 whereField.appendChild(option);
 
-                // Vérifier si c'est un champ ID
-                const isIdField = column.toLowerCase().includes('_id') || column.toLowerCase() === 'id';
-
-                // Ne créer les inputs que pour les champs non-ID
-                if (!isIdField) {
-                    const listItem = document.createElement("li");
-
-                    const checkbox = document.createElement("input");
-                    checkbox.type = "checkbox";
-                    checkbox.className = "field-checkbox";
-                    checkbox.style.marginRight = "10px";
-                    checkbox.dataset.field = column;
-
-                    const label = document.createElement("label");
-                    label.textContent = column;
-                    label.style.marginRight = "10px";
-
-                    const input = document.createElement("input");
-                    input.type = "text";
-                    input.className = "field-input";
-                    input.style.display = "none";
-                    input.style.marginLeft = "10px";
-                    input.placeholder = "Enter your value";
-                    input.dataset.field = column;
-
-                    checkbox.addEventListener("change", function () {
-                        input.style.display = this.checked ? "inline-block" : "none";
-                    });
-
-                    listItem.appendChild(checkbox);
-                    listItem.appendChild(label);
-                    listItem.appendChild(input);
-                    fieldsList.appendChild(listItem);
-                }
             });
 
             fieldsContainer.appendChild(fieldsList);

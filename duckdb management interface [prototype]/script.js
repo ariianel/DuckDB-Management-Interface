@@ -1256,9 +1256,15 @@ runQueryBtnConsole.addEventListener("click", function (event) {
         msgError.textContent = "To execute a query you need to write somethings !"
         return;
     }
-    else{
-        executeSQL()
+
+    if(!sqlQuery.toLowerCase().startsWith('select')){
+        msgError.style.display = "block";
+        msgError.textContent = "Only SELECT queries are allowed!";
+        return;
     }
+
+    executeSQL()
+
 
 });
 
@@ -2507,6 +2513,76 @@ async function updateTableData(tableName) {
             msgInfo.style.color = "#af1111";
             msgInfo.style.display = "block";
             msgInfo.textContent = "Error during update: " + error.message;
+        }
+    }
+}
+
+const buttonsDelete = document.querySelectorAll('.delete-simple-display-btn');
+
+buttonsDelete.forEach(button => {
+    button.addEventListener('click', function() {
+
+        buttonsDelete.forEach(btn => btn.classList.remove('tmp'));
+
+        this.classList.add('tmp');
+    });
+});
+
+document.querySelector("#delete-validate-btn").addEventListener("click", function() {
+    const buttonTableMap = {
+        'delete-evaluation-results-btn': 'evaluation_results',
+        'delete-evaluation-runs-btn': 'evaluation_runs',
+        'delete-task-configs-btn': 'task_configs',
+        'delete-task-metrics-btn': 'task_metrics',
+        'delete-task-summaries-btn': 'task_summaries',
+        'delete-general-summary-btn': 'general_summary'
+    };
+
+    for (const [btnId, tableName] of Object.entries(buttonTableMap)) {
+        if (document.getElementById(btnId).classList.contains('tmp')) {
+            console.log("coucou je suis la encore hehe");
+            deleteTableData(tableName);
+            break;
+        }
+    }
+});
+
+// Fonction de suppression des données
+async function deleteTableData(tableName) {
+    const whereField = document.getElementById("delete-where-field");
+    const whereValue = document.getElementById("delete-where-value");
+
+    try {
+        let query = `DELETE FROM ${tableName}`;
+
+        // Ajouter la clause WHERE si une valeur est spécifiée
+        if (whereValue.value.trim() !== '') {
+            query += ` WHERE ${whereField.value} = '${whereValue.value}'`;
+        } else {
+            // Demander confirmation pour une suppression sans clause WHERE
+            if (!confirm("Vous êtes sur le point de supprimer toutes les données de la table. Êtes-vous sûr ?")) {
+                return;
+            }
+        }
+
+        query += ';';
+        console.log("Query:", query); // Pour débugger
+
+        await conn.query(query);
+
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#28a745";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Delete successful!";
+        }
+
+    } catch(error) {
+        const msgInfo = document.querySelector('.msg-info');
+        if (msgInfo) {
+            msgInfo.style.color = "#af1111";
+            msgInfo.style.display = "block";
+            msgInfo.textContent = "Error during delete: " + error.message;
         }
     }
 }
