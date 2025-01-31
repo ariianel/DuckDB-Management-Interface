@@ -2499,6 +2499,8 @@ async function updateTableData(tableName) {
 
         await conn.query(query);
 
+        await saveToLocalStorage(conn);
+
         const msgInfo = document.querySelector('.msg-info');
         if (msgInfo) {
             msgInfo.style.color = "#28a745";
@@ -2569,6 +2571,8 @@ async function deleteTableData(tableName) {
         console.log("Query:", query); // Pour débugger
 
         await conn.query(query);
+
+        await saveToLocalStorage(conn);
 
         const msgInfo = document.querySelector('.msg-info');
         if (msgInfo) {
